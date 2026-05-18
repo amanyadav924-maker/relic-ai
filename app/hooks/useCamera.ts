@@ -94,18 +94,8 @@ export function useCamera(): UseCameraReturn {
 
       streamRef.current = stream;
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        // Wait for the video to actually start playing
-        await new Promise<void>((resolve, reject) => {
-          const video = videoRef.current!;
-          video.onloadedmetadata = () => {
-            video.play().then(resolve).catch(reject);
-          };
-          // Timeout fallback
-          setTimeout(resolve, 3000);
-        });
-      }
+      // We will sync the stream to the video element in a useEffect
+      // because the video element may not be mounted until permissionState becomes 'granted'
 
       setPermissionState("granted");
       setIsStreaming(true);
@@ -177,6 +167,21 @@ export function useCamera(): UseCameraReturn {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Synchronize stream with video element
+  useEffect(() => {
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    
+    if (isStreaming && video && stream && video.srcObject !== stream) {
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video.play().catch(err => console.error("Video play error:", err));
+      };
+      video.play().catch(() => {});
+    }
+  }); // Run after every render to catch when the ref is assigned
+
 
   return {
     permissionState,
