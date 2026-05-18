@@ -20,11 +20,11 @@ export default function HeritageBackground() {
   useEffect(() => {
     setMounted(true);
     // Generate soft, glowing warm sunlight particles
-    const generated = Array.from({ length: 20 }, (_, i) => ({
+    const generated = Array.from({ length: 25 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 5 + 2,
+      size: Math.random() * 6 + 2,
       dur: Math.random() * 8 + 10,
       delay: Math.random() * -5,
     }));
@@ -84,9 +84,9 @@ export default function HeritageBackground() {
                 height: p.size,
                 top: `${p.y}%`,
                 left: `${p.x}%`,
-                backgroundColor: "#FEF08A",
-                boxShadow: "0 0 8px #FEF08A",
-                opacity: 0.35,
+                backgroundColor: "#FFFFFF",
+                boxShadow: "0 0 10px #FFFFFF",
+                opacity: 0.6,
                 animationDuration: `${p.dur}s`,
                 animationDelay: `${p.delay}s`,
               }}
@@ -98,7 +98,7 @@ export default function HeritageBackground() {
       {/* ── Framer Motion Natural Clouds ───────────────────────────── */}
       {mounted && (
         <div className="absolute inset-0">
-          {/* Cloud 1: Deep slow sky background */}
+          {/* Cloud 1 */}
           <motion.svg
             className="absolute w-[280px] h-[120px] fill-white opacity-40 blur-[2px]"
             style={{ top: "10%", left: "-300px" }}
@@ -109,7 +109,7 @@ export default function HeritageBackground() {
             <path d="M 10 30 A 10 10 0 0 1 20 15 A 12 12 0 0 1 45 10 A 10 10 0 0 1 65 15 A 8 8 0 0 1 75 30 Z" />
           </motion.svg>
 
-          {/* Cloud 2: Middle-layer cloud drifting backwards */}
+          {/* Cloud 2 */}
           <motion.svg
             className="absolute w-[220px] h-[90px] fill-white opacity-55"
             style={{ top: "25%", right: "-250px" }}
@@ -120,7 +120,7 @@ export default function HeritageBackground() {
             <path d="M 15 35 A 8 8 0 0 1 25 22 A 10 10 0 0 1 48 18 A 9 9 0 0 1 65 22 A 7 7 0 0 1 75 35 Z" />
           </motion.svg>
 
-          {/* Cloud 3: High, fast, soft cloud */}
+          {/* Cloud 3 */}
           <motion.svg
             className="absolute w-[350px] h-[150px] fill-white opacity-30 blur-[4px]"
             style={{ top: "5%", left: "-400px" }}
@@ -130,21 +130,10 @@ export default function HeritageBackground() {
           >
             <path d="M 10 30 A 12 12 0 0 1 22 12 A 15 15 0 0 1 52 8 A 12 12 0 0 1 72 12 A 10 10 0 0 1 85 30 Z" />
           </motion.svg>
-
-          {/* Cloud 4: Front, slow cinematic cloud */}
-          <motion.svg
-            className="absolute w-[260px] h-[100px] fill-white opacity-50"
-            style={{ top: "18%", left: "-300px" }}
-            animate={{ x: ["0vw", "120vw"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 125, delay: 20 }}
-            viewBox="0 0 100 40"
-          >
-            <path d="M 15 30 A 8 8 0 0 1 23 18 A 11 11 0 0 1 45 12 A 9 9 0 0 1 63 18 A 7 7 0 0 1 72 30 Z" />
-          </motion.svg>
         </div>
       )}
 
-      {/* ── Framer Motion Flying Birds (Gliding in V-Formation) ─────── */}
+      {/* ── Framer Motion Flying Birds ─────────────────────────────── */}
       {mounted && (
         <div className="absolute inset-0">
           <motion.div
@@ -180,8 +169,8 @@ export default function HeritageBackground() {
         </div>
       )}
 
-      {/* ── Monument Skyline SVG Layer (Bright/Silver Glassy Silhouettes) ── */}
-      <div className="absolute bottom-0 left-0 right-0 w-full h-[55vh] md:h-[45vh] flex flex-col justify-end">
+      {/* ── Vector Monument Skyline (Vibrant Gradients) ──────────── */}
+      <div className="absolute bottom-0 left-0 right-0 w-full h-[50vh] md:h-[40vh] flex flex-col justify-end">
         <svg
           viewBox="0 0 1600 500"
           className="w-full h-full object-cover origin-bottom translate-y-[2px]"
@@ -189,56 +178,57 @@ export default function HeritageBackground() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            {/* Monument Light Gradients (Clean Pastel Gradients with silver tones) */}
-            <linearGradient id="grad-arch-light" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.8" />
-              <stop offset="35%" stopColor="#FED7AA" stopOpacity="0.85" /> {/* Soft Orange */}
-              <stop offset="70%" stopColor="#FBCFE8" stopOpacity="0.8" />  {/* Soft Pink */}
-              <stop offset="100%" stopColor="#BAE6FD" stopOpacity="0.1" /> {/* Fade */}
+            {/* Vibrant Monument Gradients */}
+            <linearGradient id="grad-arch" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#F97316" stopOpacity="0.9" />  {/* Bright Orange */}
+              <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.85" /> {/* Amber */}
+              <stop offset="100%" stopColor="#FBBF24" stopOpacity="0.3" /> {/* Yellow Fade */}
             </linearGradient>
 
-            <linearGradient id="grad-minar-light" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-              <stop offset="40%" stopColor="#CFFAFE" stopOpacity="0.8" />  {/* Soft Cyan */}
-              <stop offset="75%" stopColor="#A7F3D0" stopOpacity="0.75" /> {/* Soft Green */}
-              <stop offset="100%" stopColor="#BAE6FD" stopOpacity="0.1" />
+            <linearGradient id="grad-minar" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#06B6D4" stopOpacity="0.95" /> {/* Neon Cyan */}
+              <stop offset="50%" stopColor="#3B82F6" stopOpacity="0.85" /> {/* Blue */}
+              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0.3" /> {/* Dark Blue Fade */}
             </linearGradient>
 
-            <linearGradient id="grad-taj-light" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
-              <stop offset="30%" stopColor="#F3E8FF" stopOpacity="0.85" /> {/* Soft Purple */}
-              <stop offset="65%" stopColor="#FCE7F3" stopOpacity="0.8" />  {/* Soft Pink */}
-              <stop offset="100%" stopColor="#E0F2FE" stopOpacity="0.1" />
+            <linearGradient id="grad-taj" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#D946EF" stopOpacity="0.95" /> {/* Fuchsia */}
+              <stop offset="50%" stopColor="#A855F7" stopOpacity="0.9" /> {/* Purple */}
+              <stop offset="100%" stopColor="#3B0764" stopOpacity="0.3" /> {/* Deep Purple Fade */}
             </linearGradient>
 
-            <linearGradient id="grad-temple-light" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-              <stop offset="35%" stopColor="#FEF3C7" stopOpacity="0.8" />  {/* Soft Gold */}
-              <stop offset="70%" stopColor="#FCA5A5" stopOpacity="0.7" />  {/* Soft Red */}
-              <stop offset="100%" stopColor="#BAE6FD" stopOpacity="0.1" />
+            <linearGradient id="grad-temple" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />  {/* Emerald Green */}
+              <stop offset="50%" stopColor="#14B8A6" stopOpacity="0.85" /> {/* Teal */}
+              <stop offset="100%" stopColor="#042F2E" stopOpacity="0.3" /> {/* Dark Green Fade */}
             </linearGradient>
 
-            <linearGradient id="grad-stupa-light" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-              <stop offset="50%" stopColor="#D1FAE5" stopOpacity="0.8" />  {/* Soft Emerald */}
-              <stop offset="85%" stopColor="#CFFAFE" stopOpacity="0.7" />  {/* Soft Cyan */}
-              <stop offset="100%" stopColor="#E0F2FE" stopOpacity="0.1" />
+            <linearGradient id="grad-buddha" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FBBF24" stopOpacity="0.95" /> {/* Golden Yellow */}
+              <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.9" />  {/* Rich Amber */}
+              <stop offset="100%" stopColor="#9A3412" stopOpacity="0.3" /> {/* Dark Orange Fade */}
+            </linearGradient>
+
+            <linearGradient id="grad-stupa" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.9" />  {/* Indigo */}
+              <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.85" /> {/* Violet */}
+              <stop offset="100%" stopColor="#2E1065" stopOpacity="0.3" /> {/* Dark Indigo Fade */}
             </linearGradient>
 
             <linearGradient id="grad-skyline-reflection" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.3" />
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
               <stop offset="40%" stopColor="#ffffff" stopOpacity="0.1" />
               <stop offset="100%" stopColor="#ffffff" stopOpacity="0.0" />
             </linearGradient>
 
             {/* Reflection masking */}
-            <mask id="light-reflection-mask">
+            <mask id="reflection-mask">
               <rect x="0" y="380" width="1600" height="120" fill="url(#grad-skyline-reflection)" />
             </mask>
 
-            {/* Light glow shadow */}
-            <filter id="glow-monument-light" x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
+            {/* Neon glow shadow */}
+            <filter id="glow-monument" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -246,126 +236,124 @@ export default function HeritageBackground() {
             </filter>
           </defs>
 
-          {/* ── Distant Hills / Ancient Fort Silhouettes ─────────────── */}
-          <g opacity="0.25">
-            <path d="M 0 380 L 180 340 L 350 375 L 580 310 L 800 375 L 1050 330 L 1320 375 L 1600 350 L 1600 380 L 0 380 Z" fill="#F8FAFC" />
-            <path d="M 0 380 L 250 355 L 480 380 L 750 335 L 980 380 L 1250 345 L 1500 380 L 1600 365 L 1600 380 L 0 380 Z" fill="#E2E8F0" />
+          {/* ── Background Mountains / Distant Forts ─────────────── */}
+          <g opacity="0.3">
+            <path d="M 0 380 L 180 320 L 350 365 L 580 290 L 800 365 L 1050 310 L 1320 365 L 1600 330 L 1600 380 L 0 380 Z" fill="#93C5FD" />
+            <path d="M 0 380 L 250 345 L 480 375 L 750 325 L 980 375 L 1250 335 L 1500 375 L 1600 355 L 1600 380 L 0 380 Z" fill="#BFDBFE" />
           </g>
 
-          {/* ── Vector Monument Silhouettes ──────────────────────────── */}
-          <g id="skyline-light" filter="url(#glow-monument-light)">
-            {/* 1. India Gate / Grand Arch (X Center = 250) */}
-            <g fill="url(#grad-arch-light)">
-              <rect x="190" y="250" width="120" height="130" rx="4" />
-              {/* Inner Arch Cutout (Matching the sky backdrop gradient perfectly) */}
-              <path d="M 222 380 L 222 305 C 222 280, 278 280, 278 305 L 278 380 Z" fill="#BAE6FD" />
-              <rect x="180" y="240" width="140" height="10" rx="2" />
-              <rect x="200" y="225" width="100" height="15" rx="2" />
-              <rect x="215" y="212" width="70" height="13" rx="1.5" />
-              <ellipse cx="250" cy="212" rx="20" ry="5" />
-              <rect x="184" y="260" width="6" height="110" rx="1" fill="#BAE6FD" opacity="0.3" />
-              <rect x="310" y="260" width="6" height="110" rx="1" fill="#BAE6FD" opacity="0.3" />
+          {/* ── Vibrant Vector Skyline ────────────────────────────── */}
+          <g id="vibrant-skyline" filter="url(#glow-monument)">
+            {/* 1. India Gate / Grand Arch (X Center = 180) */}
+            <g fill="url(#grad-arch)">
+              <rect x="120" y="230" width="120" height="150" rx="6" />
+              <path d="M 152 380 L 152 290 C 152 260, 208 260, 208 290 L 208 380 Z" fill="#7DD3FC" />
+              <rect x="110" y="215" width="140" height="15" rx="3" />
+              <rect x="130" y="195" width="100" height="20" rx="3" />
+              <rect x="150" y="180" width="60" height="15" rx="2" />
+              <ellipse cx="180" cy="180" rx="22" ry="6" />
             </g>
 
-            {/* 2. Qutub Minar (X Center = 500) */}
-            <g fill="url(#grad-minar-light)">
-              <path d="M 485 380 L 493 110 L 507 110 L 515 380 Z" />
-              <rect x="488" y="315" width="24" height="6" rx="1" />
-              <rect x="491" y="245" width="18" height="6" rx="1" />
-              <rect x="494" y="175" width="12" height="6" rx="1" />
-              <rect x="495" y="110" width="10" height="6" rx="1" />
-              <polygon points="497,110 500,75 503,110" />
-              <line x1="497" y1="116" x2="497" y2="380" stroke="#BAE6FD" strokeWidth="1" opacity="0.4" />
-              <line x1="503" y1="116" x2="503" y2="380" stroke="#BAE6FD" strokeWidth="1" opacity="0.4" />
+            {/* 2. Qutub Minar (X Center = 380) */}
+            <g fill="url(#grad-minar)">
+              <path d="M 362 380 L 372 90 L 388 90 L 398 380 Z" />
+              <rect x="366" y="315" width="28" height="8" rx="2" />
+              <rect x="368" y="240" width="24" height="8" rx="2" />
+              <rect x="370" y="165" width="20" height="8" rx="2" />
+              <rect x="371" y="90" width="18" height="8" rx="2" />
+              <polygon points="375,90 380,50 385,90" />
             </g>
 
-            {/* 3. Taj Mahal (X Center = 800) */}
-            <g fill="url(#grad-taj-light)">
-              <rect x="735" y="310" width="130" height="70" rx="4" />
-              <path d="M 765 310 C 765 240, 775 220, 800 185 C 825 220, 835 240, 835 310 Z" />
-              <line x1="800" y1="185" x2="800" y2="155" stroke="url(#grad-taj-light)" strokeWidth="3" />
-              <circle cx="800" cy="155" r="3.5" />
+            {/* 3. Taj Mahal (X Center = 680) */}
+            <g fill="url(#grad-taj)">
+              <rect x="600" y="290" width="160" height="90" rx="6" />
+              <path d="M 640 290 C 640 200, 655 170, 680 120 C 705 170, 720 200, 720 290 Z" />
+              <line x1="680" y1="120" x2="680" y2="80" stroke="url(#grad-taj)" strokeWidth="4" />
+              <circle cx="680" cy="80" r="5" />
               
-              <path d="M 775 380 L 775 330 C 775 315, 825 315, 825 330 L 825 380 Z" fill="#BAE6FD" />
-              <path d="M 747 380 L 747 350 C 747 343, 763 343, 763 350 L 763 380 Z" fill="#BAE6FD" />
-              <path d="M 837 380 L 837 350 C 837 343, 853 343, 853 350 L 853 380 Z" fill="#BAE6FD" />
+              <path d="M 650 380 L 650 320 C 650 300, 710 300, 710 320 L 710 380 Z" fill="#7DD3FC" />
+              <path d="M 615 380 L 615 340 C 615 330, 635 330, 635 340 L 635 380 Z" fill="#7DD3FC" />
+              <path d="M 725 380 L 725 340 C 725 330, 745 330, 745 340 L 745 380 Z" fill="#7DD3FC" />
 
-              <rect x="746" y="290" width="10" height="20" />
-              <path d="M 744 290 C 744 275, 758 275, 758 290 Z" />
-              
-              <rect x="844" y="290" width="10" height="20" />
-              <path d="M 842 290 C 842 275, 856 275, 856 290 Z" />
-
-              <rect x="698" y="200" width="8" height="180" rx="1.5" />
-              <rect x="695" y="310" width="14" height="4" />
-              <rect x="696" y="250" width="12" height="4" />
-              <path d="M 696 200 C 696 185, 708 185, 708 200 Z" />
-              
-              <rect x="894" y="200" width="8" height="180" rx="1.5" />
-              <rect x="891" y="310" width="14" height="4" />
-              <rect x="892" y="250" width="12" height="4" />
-              <path d="M 892 200 C 892 185, 904 185, 904 200 Z" />
+              <rect x="550" y="160" width="12" height="220" rx="2" />
+              <path d="M 548 160 C 548 140, 564 140, 564 160 Z" />
+              <rect x="798" y="160" width="12" height="220" rx="2" />
+              <path d="M 796 160 C 796 140, 812 140, 812 160 Z" />
             </g>
 
-            {/* 4. Ancient Shikhara Temple (X Center = 1150) */}
-            <g fill="url(#grad-temple-light)">
-              <path d="M 1090 380 C 1090 330, 1105 280, 1115 270 L 1120 380 Z" />
-              <path d="M 1210 380 C 1210 330, 1195 280, 1185 270 L 1180 380 Z" />
-              <path d="M 1102 380 C 1102 310, 1120 230, 1130 215 L 1135 380 Z" />
-              <path d="M 1198 380 C 1198 310, 1180 230, 1170 215 L 1165 380 Z" />
+            {/* 4. Ancient Temple (X Center = 950) */}
+            <g fill="url(#grad-temple)">
+              <path d="M 880 380 C 880 310, 900 240, 915 220 L 925 380 Z" />
+              <path d="M 1020 380 C 1020 310, 1000 240, 985 220 L 975 380 Z" />
+              <path d="M 895 380 C 895 280, 920 180, 935 150 L 945 380 Z" />
+              <path d="M 1005 380 C 1005 280, 980 180, 965 150 L 955 380 Z" />
 
-              <path d="M 1118 380 C 1118 280, 1132 180, 1150 120 C 1168 180, 1182 280, 1182 380 Z" />
-              <ellipse cx="1150" cy="115" rx="8" ry="4" />
-              <ellipse cx="1150" cy="111" rx="5" ry="2.5" />
-              <polygon points="1149,111 1150,92 1151,111" />
-
-              <rect x="1148" y="135" width="4" height="235" fill="#BAE6FD" opacity="0.3" />
-              <rect x="1132" y="240" width="3" height="120" fill="#BAE6FD" opacity="0.3" />
-              <rect x="1165" y="240" width="3" height="120" fill="#BAE6FD" opacity="0.3" />
+              <path d="M 915 380 C 915 240, 935 110, 950 40 C 965 110, 985 240, 985 380 Z" />
+              <ellipse cx="950" cy="35" rx="10" ry="5" />
+              <polygon points="948,35 950,10 952,35" />
             </g>
 
-            {/* 5. Sanchi Stupa / Great Dome (X Center = 1380) */}
-            <g fill="url(#grad-stupa-light)">
-              <path d="M 1320 380 A 65 65 0 0 1 1450 380 Z" />
-              <rect x="1310" y="335" width="6" height="45" />
-              <rect x="1335" y="335" width="6" height="45" />
-              <rect x="1302" y="332" width="45" height="4" rx="1" />
-              <rect x="1302" y="340" width="45" height="4" rx="1" />
+            {/* 5. Majestic Buddha Statue (X Center = 1200) */}
+            <g fill="url(#grad-buddha)">
+              {/* Lotus Base */}
+              <ellipse cx="1200" cy="370" rx="60" ry="12" />
+              <path d="M 1140 370 Q 1200 395 1260 370 Z" />
+              {/* Crossed Legs */}
+              <path d="M 1150 365 Q 1200 350 1250 365 C 1245 335, 1155 335, 1150 365 Z" />
+              {/* Torso */}
+              <path d="M 1175 350 Q 1190 280 1200 270 Q 1210 280 1225 350 Z" />
+              {/* Shoulders & Arms */}
+              <path d="M 1165 295 C 1170 275, 1230 275, 1235 295 Q 1245 330 1220 345 Q 1200 355 1180 345 Q 1155 330 1165 295 Z" />
+              {/* Head & Halo */}
+              <circle cx="1200" cy="245" r="18" />
+              <circle cx="1200" cy="245" r="28" fill="url(#grad-buddha)" opacity="0.4" />
+              <path d="M 1195 230 Q 1200 215 1205 230 Z" /> {/* Top Knot */}
+              <circle cx="1200" cy="245" r="45" fill="none" stroke="url(#grad-buddha)" strokeWidth="1.5" opacity="0.6" />
+            </g>
 
-              <rect x="1429" y="335" width="6" height="45" />
-              <rect x="1454" y="335" width="6" height="45" />
-              <rect x="1421" y="332" width="45" height="4" rx="1" />
-              <rect x="1421" y="340" width="45" height="4" rx="1" />
+            {/* 6. Sanchi Stupa / Great Dome (X Center = 1450) */}
+            <g fill="url(#grad-stupa)">
+              <path d="M 1370 380 A 80 80 0 0 1 1530 380 Z" />
+              <rect x="1360" y="325" width="8" height="55" />
+              <rect x="1390" y="325" width="8" height="55" />
+              <rect x="1350" y="320" width="55" height="5" rx="1.5" />
+              <rect x="1350" y="332" width="55" height="5" rx="1.5" />
 
-              <rect x="1377" y="309" width="16" height="6" rx="0.5" />
-              <line x1="1385" y1="309" x2="1385" y2="280" stroke="url(#grad-stupa-light)" strokeWidth="2.5" />
-              <line x1="1375" y1="298" x2="1395" y2="298" stroke="url(#grad-stupa-light)" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="1378" y1="289" x2="1392" y2="289" stroke="url(#grad-stupa-light)" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="1381" y1="280" x2="1389" y2="280" stroke="url(#grad-stupa-light)" strokeWidth="2" strokeLinecap="round" />
+              <rect x="1502" y="325" width="8" height="55" />
+              <rect x="1532" y="325" width="8" height="55" />
+              <rect x="1492" y="320" width="55" height="5" rx="1.5" />
+              <rect x="1492" y="332" width="55" height="5" rx="1.5" />
+
+              <rect x="1438" y="295" width="24" height="8" rx="1" />
+              <line x1="1450" y1="295" x2="1450" y2="250" stroke="url(#grad-stupa)" strokeWidth="3.5" />
+              <line x1="1435" y1="275" x2="1465" y2="275" stroke="url(#grad-stupa)" strokeWidth="3" strokeLinecap="round" />
+              <line x1="1440" y1="262" x2="1460" y2="262" stroke="url(#grad-stupa)" strokeWidth="3" strokeLinecap="round" />
             </g>
           </g>
 
-          {/* ── Ground Horizon Line (Glowing Vector Boundary) ─────────── */}
-          <line x1="0" y1="380" x2="1600" y2="380" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
-          <line x1="0" y1="380.5" x2="1600" y2="380.5" stroke="#FFFFFF" strokeWidth="1" className="opacity-60 animate-pulse" />
+          {/* ── Ground Horizon Vector Line ───────────────────────────── */}
+          <line x1="0" y1="380" x2="1600" y2="380" stroke="rgba(255,255,255,0.7)" strokeWidth="2" />
+          <line x1="0" y1="381" x2="1600" y2="381" stroke="#FFFFFF" strokeWidth="1" className="opacity-90 animate-pulse" />
 
           {/* ── Mirror Water Reflection Layer (Flipped & Blurs) ───────── */}
           <g
             transform="scale(1, -1) translate(0, -760)"
-            mask="url(#light-reflection-mask)"
-            opacity="0.55"
+            mask="url(#reflection-mask)"
+            opacity="0.65"
             className="animate-water-ripple"
-            style={{ filter: "blur(2px)" }}
+            style={{ filter: "blur(3px)" }}
           >
-            <use href="#skyline-light" />
+            <use href="#vibrant-skyline" />
           </g>
         </svg>
       </div>
 
-      {/* ── Bottom Lake Overlay ────────────────────────────────────── */}
-      <div className="absolute bottom-0 left-0 right-0 h-[220px] pointer-events-none z-10"
+      {/* ── Glowing Fog / Surface Light Layer ───────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 h-[140px] pointer-events-none z-10 animate-pulse"
         style={{
-          background: "linear-gradient(to top, #BAE6FD 15%, rgba(186, 230, 253, 0.75) 50%, transparent 100%)"
+          background: "linear-gradient(to top, rgba(255, 255, 255, 0.4) 0%, rgba(186, 230, 253, 0.2) 60%, transparent 100%)",
+          filter: "blur(10px)",
+          animationDuration: "5s"
         }}
       />
     </div>

@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect, DragEvent } from "react";
+import { useState, useRef, useCallback, useEffect, DragEvent, ReactNode } from "react";
 import HeritageBackground from "./components/HeritageBackground";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  UploadCloud, FolderOpen, Search, History, Compass, Settings, 
+  MapPin, Paintbrush, Target, CalendarDays, BookOpen, RefreshCw, Sparkles 
+} from "lucide-react";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 interface ParsedResponse {
@@ -118,11 +122,11 @@ function SkeletonCard() {
 }
 
 // ── Info row inside response card ────────────────────────────────────────────
-function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+function InfoRow({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   if (!value) return null;
   return (
     <div className="flex items-start gap-3">
-      <span className="text-lg">{icon}</span>
+      <div className="text-sky-600 mt-0.5">{icon}</div>
       <div>
         <p className="text-[11px] uppercase tracking-widest text-slate-500 font-bold">{label}</p>
         <p className="text-slate-800 text-sm font-semibold leading-snug">{value}</p>
@@ -132,11 +136,13 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
 }
 
 // ── Bottom nav tab ───────────────────────────────────────────────────────────
-function NavTab({ icon, label, active }: { icon: string; label: string; active?: boolean }) {
+function NavTab({ icon, label, active }: { icon: ReactNode; label: string; active?: boolean }) {
   return (
-    <button className="flex flex-col items-center gap-1 flex-1 py-1 transition-opacity hover:opacity-100"
+    <button className="flex flex-col items-center gap-1.5 flex-1 py-1 transition-opacity hover:opacity-100"
       style={{ opacity: active ? 1 : 0.45 }}>
-      <span className="text-xl">{icon}</span>
+      <div className={`${active ? "text-sky-600" : "text-slate-500"}`}>
+        {icon}
+      </div>
       <span className={`text-[10px] font-bold tracking-wide ${active ? "text-sky-600" : "text-slate-500"}`}>
         {label}
       </span>
@@ -244,6 +250,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24">
+      <Particles />
 
       {/* ── Premium Indian Heritage Animated Background ───────── */}
       <HeritageBackground />
@@ -259,19 +266,19 @@ export default function Home() {
         <StatusBadge scanning={loading} />
       </header>
 
-      {/* ── Main content ────────────────────────────────────── */}
+      {/* ── Main content (Centered perfectly) ───────────────── */}
       <motion.main 
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative z-10 flex-1 flex flex-col gap-5 px-4 max-w-md mx-auto w-full"
+        className="relative z-10 flex-1 flex flex-col justify-center gap-5 px-4 max-w-md mx-auto w-full"
       >
 
         {/* ── Upload / Camera preview area ─────────────────── */}
         <div className="fade-up delay-100">
           <div
-            className={`relative rounded-3xl overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${dragging ? "upload-active" : "glow-border-multi"}`}
-            style={{ aspectRatio: "4/3", background: "rgba(255, 255, 255, 0.45)" }}
+            className={`relative overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${dragging ? "upload-active glass-upload-card" : "glass-upload-card"}`}
+            style={{ aspectRatio: "4/3" }}
             onDragOver={e => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
@@ -294,8 +301,8 @@ export default function Home() {
                     style={{ background: "rgba(255, 255, 255, 0.5)" }}>
                     <div className="scan-line" />
                     <div className="mt-auto mb-6 text-center">
-                      <p className="text-sky-600 text-sm font-bold tracking-widest uppercase animate-pulse">
-                        Scanning Heritage…
+                      <p className="flex items-center gap-2 justify-center text-sky-600 text-sm font-bold tracking-widest uppercase animate-pulse">
+                        <Sparkles size={16} /> Scanning Heritage…
                       </p>
                     </div>
                   </div>
@@ -304,37 +311,24 @@ export default function Home() {
                 {!loading && (
                   <button
                     onClick={e => { e.stopPropagation(); inputRef.current?.click(); }}
-                    className="absolute bottom-3 right-3 glass px-3 py-1.5 rounded-xl text-xs font-bold text-sky-600 hover:bg-sky-100/50 transition-colors"
+                    className="absolute bottom-3 right-3 glass px-3 py-1.5 rounded-xl text-xs font-bold text-sky-600 hover:bg-sky-100/50 transition-colors flex items-center gap-1.5"
                   >
-                    ✦ Change
+                    <RefreshCw size={14} /> Change
                   </button>
                 )}
-                {/* Corner brackets */}
-                {["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"].map((pos, i) => (
-                  <span key={i} className={`absolute ${pos} w-5 h-5 border-sky-500 opacity-80`}
-                    style={{
-                      borderTopWidth:    i < 2 ? 2 : 0,
-                      borderBottomWidth: i >= 2 ? 2 : 0,
-                      borderLeftWidth:   i % 2 === 0 ? 2 : 0,
-                      borderRightWidth:  i % 2 === 1 ? 2 : 0,
-                    }} />
-                ))}
               </>
             ) : (
-              /* Empty state */
+              /* Empty state (Perfectly matching the frosted glass requirements) */
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                  style={{ background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
-                  🏛️
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-sky-600"
+                  style={{ background: "rgba(168, 85, 247, 0.08)", border: "1px solid rgba(168, 85, 247, 0.2)" }}>
+                  <UploadCloud size={32} />
                 </div>
-                <p className="text-sky-600 font-black text-base">Drop or tap to upload</p>
-                <p className="text-slate-500 text-xs leading-relaxed font-medium">
-                  Upload a photo of any monument, heritage site, or famous artwork
-                </p>
-                <div className="flex gap-2 flex-wrap justify-center mt-1">
+                <p className="text-slate-800 font-black text-lg mt-2">Drop or tap to upload</p>
+                <div className="flex gap-2 flex-wrap justify-center mt-2">
                   {["JPEG", "PNG", "WEBP"].map(f => (
-                    <span key={f} className="px-2.5 py-0.5 rounded-full text-[10px] font-bold text-slate-600"
-                      style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.8)" }}>
+                    <span key={f} className="px-3 py-1 rounded-full text-[10px] font-bold text-slate-600 shadow-sm"
+                      style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.9)" }}>
                       {f}
                     </span>
                   ))}
@@ -345,14 +339,14 @@ export default function Home() {
           <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFileInput} />
         </div>
 
-        {/* ── Upload button (when no preview) ──────────────── */}
+        {/* ── Upload button (when no preview) (Pill Shape) ──────────────── */}
         {!preview && (
           <button
             onClick={() => inputRef.current?.click()}
-            className="fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm text-white transition-all shadow-[0_4px_15px_rgba(14,165,233,0.2)]"
-            style={{ background: "linear-gradient(135deg, #0EA5E9, #0284C7)" }}
+            className="fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-4 rounded-full font-bold text-base text-white transition-all shadow-lg shadow-blue-500/50 hover:shadow-blue-500/70"
+            style={{ background: "linear-gradient(135deg, #3B82F6, #4F46E5)" }}
           >
-            <span className="text-lg">📁</span> Upload Image or Artwork
+            <FolderOpen size={20} /> Upload Image or Artwork
           </button>
         )}
 
@@ -375,10 +369,10 @@ export default function Home() {
               <button
                 onClick={handleScan}
                 disabled={loading}
-                className={`relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-white transition-all duration-300 ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
-                style={{ background: loading ? "#0284C7" : "linear-gradient(135deg, #0EA5E9, #0284C7)", boxShadow: "0 6px 32px rgba(14,165,233,0.3)" }}
+                className={`relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-white transition-all duration-300 shadow-lg shadow-blue-500/50 hover:shadow-blue-500/70 ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
+                style={{ background: loading ? "#0284C7" : "linear-gradient(135deg, #3B82F6, #4F46E5)" }}
               >
-                <span className="text-xl">{loading ? "⏳" : "🔍"}</span>
+                {loading ? <RefreshCw className="animate-spin" size={20} /> : <Search size={20} />}
                 <span>{loading ? "Scanning Heritage…" : "Scan with Relic AI"}</span>
               </button>
             </div>
@@ -394,12 +388,11 @@ export default function Home() {
         {error && (
           <div className="fade-up glass px-4 py-3 rounded-2xl flex items-start gap-3"
             style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.06)" }}>
-            <span className="text-lg mt-0.5">⚠️</span>
+            <div className="text-red-500 mt-0.5"><AlertCircle size={20} /></div>
             <p className="text-red-500 text-sm font-semibold leading-relaxed">{error}</p>
           </div>
         )}
 
-        {/* ── Loading skeleton ──────────────────────────────── */}
         {loading && <SkeletonCard />}
 
         {/* ── AI Response card (Framer Motion Enhanced) ──────── */}
@@ -417,8 +410,8 @@ export default function Home() {
               {/* Card header */}
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-sky-600 font-bold mb-1">
-                    ✦ Landmark / Masterpiece Identified
+                  <p className="text-[10px] uppercase tracking-widest text-sky-600 font-bold mb-1 flex items-center gap-1.5">
+                    <Sparkles size={12} /> Landmark Identified
                   </p>
                   <h2 className="text-xl font-black text-slate-900 leading-tight">
                     {response.monument || "Heritage Masterpiece"}
@@ -430,20 +423,20 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Info grid */}
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
-                <InfoRow icon="📍" label="Location / Museum" value={response.location} />
-                <InfoRow icon="🎨" label="Creator / Builder" value={response.builtBy} />
-                <InfoRow icon="🎯" label="Purpose / Meaning" value={response.purpose} />
-                <InfoRow icon="📅" label="Era / Year" value={response.year} />
+              {/* Info grid (Using Lucide Icons) */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <InfoRow icon={<MapPin size={18} />} label="Location / Museum" value={response.location} />
+                <InfoRow icon={<Paintbrush size={18} />} label="Creator / Builder" value={response.builtBy} />
+                <InfoRow icon={<Target size={18} />} label="Purpose / Meaning" value={response.purpose} />
+                <InfoRow icon={<CalendarDays size={18} />} label="Era / Year" value={response.year} />
               </div>
 
               <hr style={{ borderColor: "rgba(255, 255, 255, 0.45)" }} />
 
               {/* Story */}
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2">
-                  📖 The Story
+                <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2 flex items-center gap-1.5">
+                  <BookOpen size={14} /> The Story
                 </p>
                 <p className="text-slate-800 text-sm font-medium leading-7">{response.story}</p>
               </div>
@@ -454,7 +447,7 @@ export default function Home() {
                   .filter(Boolean)
                   .slice(0, 5)
                   .map((tag, i) => (
-                    <span key={i} className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                    <span key={i} className="px-2.5 py-1 rounded-full text-[11px] font-semibold shadow-sm"
                       style={{ background: "rgba(14,165,233,0.08)", color: "#0369A1", border: "1px solid rgba(14,165,233,0.18)" }}>
                       #{tag}
                     </span>
@@ -465,17 +458,17 @@ export default function Home() {
               <div className="flex gap-3">
                 <button
                   onClick={handleScan}
-                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-sky-600 transition-colors"
+                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-sky-600 transition-colors flex items-center justify-center gap-2"
                   style={{ background: "rgba(14,165,233,0.06)", border: "1px solid rgba(14,165,233,0.2)" }}
                 >
-                  🔄 Re-scan
+                  <RefreshCw size={16} /> Re-scan
                 </button>
                 <button
                   onClick={handleNewUpload}
-                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.35)]"
-                  style={{ background: "linear-gradient(135deg, #0EA5E9, #0284C7)", boxShadow: "0 4px 15px rgba(14,165,233,0.15)" }}
+                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-white transition-all duration-300 shadow-md shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
+                  style={{ background: "linear-gradient(135deg, #3B82F6, #4F46E5)" }}
                 >
-                  ✨ New Upload
+                  <FilePlus size={16} /> New Upload
                 </button>
               </div>
             </motion.div>
@@ -487,10 +480,10 @@ export default function Home() {
 
       {/* ── Bottom navigation ────────────────────────────────── */}
       <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
-        <NavTab icon="🏛️" label="Scan" active />
-        <NavTab icon="📚" label="History" />
-        <NavTab icon="🗺️" label="Explore" />
-        <NavTab icon="⚙️" label="Settings" />
+        <NavTab icon={<Search size={22} />} label="Scan" active />
+        <NavTab icon={<History size={22} />} label="History" />
+        <NavTab icon={<Compass size={22} />} label="Explore" />
+        <NavTab icon={<Settings size={22} />} label="Settings" />
       </nav>
     </div>
   );
