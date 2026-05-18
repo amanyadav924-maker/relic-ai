@@ -186,3 +186,81 @@ html, body {
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border-subtle);
 }
+
+/* ── Neon Aurora Sway Animations ────────────────────────────── */
+@keyframes aurora-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(40px, 30px) scale(1.15); }
+}
+@keyframes aurora-medium {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-30px, 40px) scale(1.1); }
+}
+@keyframes aurora-fast {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(25px, -20px) scale(1.08); }
+}
+
+.animate-aurora-slow {
+  animation: aurora-slow 16s ease-in-out infinite alternate;
+}
+.animate-aurora-medium {
+  animation: aurora-medium 12s ease-in-out infinite alternate;
+}
+.animate-aurora-fast {
+  animation: aurora-fast 9s ease-in-out infinite alternate;
+}
+
+/* ── Floating Background Particles ──────────────────────────── */
+@keyframes float-bg {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  10%  { opacity: 0.35; }
+  90%  { opacity: 0.35; }
+  100% { transform: translateY(-140px) scale(0.8); opacity: 0; }
+}
+.animate-float-bg {
+  animation: float-bg var(--dur, 10s) linear infinite;
+}
+
+/* ── Mirror Water Ripple Effect ─────────────────────────────── */
+@keyframes water-ripple {
+  0%, 100% { transform: scale(1, -1) translate(0, -760px) skewX(0deg); opacity: 0.6; }
+  50%       { transform: scale(1.01, -1) translate(0, -758px) skewX(0.5deg); opacity: 0.45; }
+}
+.animate-water-ripple {
+  animation: water-ripple 6s ease-in-out infinite alternate;
+}
+
+/* ── Multi-color Neon Borders and Shimmers ──────────────────── */
+@keyframes border-glow-multi {
+  0%, 100% {
+    border-color: rgba(6, 182, 212, 0.45);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25), inset 0 0 10px rgba(6, 182, 212, 0.05);
+  }
+  25% {
+    border-color: rgba(168, 85, 247, 0.45);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.25), inset 0 0 10px rgba(168, 85, 247, 0.05);
+  }
+  50% {
+    border-color: rgba(249, 115, 22, 0.45);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.25), inset 0 0 10px rgba(249, 115, 22, 0.05);
+  }
+  75% {
+    border-color: rgba(34, 197, 94, 0.45);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.25), inset 0 0 10px rgba(34, 197, 94, 0.05);
+  }
+}
+
+.glow-border-multi {
+  animation: border-glow-multi 8s ease-in-out infinite;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Premium Multi-color Gradient Text ──────────────────────── */
+.gradient-text-multi {
+  background: linear-gradient(135deg, #06B6D4 0%, #A855F7 35%, #F97316 70%, #22C55E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+

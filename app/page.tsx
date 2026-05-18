@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, DragEvent } from "react";
+import HeritageBackground from "./components/HeritageBackground";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 interface ParsedResponse {
@@ -240,20 +241,15 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24"
-      style={{ background: "#0B0F0C" }}>
+    <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24">
 
-      {/* ── Background particles ─────────────────────────────── */}
-      <Particles />
-
-      {/* ── Subtle radial glow behind hero ──────────────────── */}
-      <div className="pointer-events-none fixed inset-0"
-        style={{ background: "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%)" }} />
+      {/* ── Premium Indian Heritage Animated Background ───────── */}
+      <HeritageBackground />
 
       {/* ── Header ──────────────────────────────────────────── */}
       <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
         <div>
-          <h1 className="text-3xl font-black tracking-tight gradient-text leading-none">Relic AI</h1>
+          <h1 className="text-3xl font-black tracking-tight gradient-text-multi leading-none">Relic AI</h1>
           <p className="text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-0.5">
             Heritage Companion
           </p>
@@ -267,7 +263,7 @@ export default function Home() {
         {/* ── Upload / Camera preview area ─────────────────── */}
         <div className="fade-up delay-100">
           <div
-            className={`relative rounded-3xl overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${dragging ? "upload-active" : "glow-border"}`}
+            className={`relative rounded-3xl overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${dragging ? "upload-active" : "glow-border-multi"}`}
             style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}
             onDragOver={e => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
@@ -401,7 +397,7 @@ export default function Home() {
 
         {/* ── AI Response card ──────────────────────────────── */}
         {showResult && response && (
-          <div ref={resultRef} className="fade-up glow-border glass p-5 space-y-5"
+          <div ref={resultRef} className="fade-up glow-border-multi glass p-5 space-y-5"
             style={{ animationDelay: "0.05s" }}>
 
             {/* Card header */}
