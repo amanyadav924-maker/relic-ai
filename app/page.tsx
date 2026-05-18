@@ -4,7 +4,9 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
 
-import { Particles } from "@/app/components/Particles";
+import { Camera, Map, Clock, Settings, Upload } from "lucide-react";
+import { ReactNode } from "react";
+
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { CameraScanner } from "@/app/components/CameraScanner";
 import { ImageUploader } from "@/app/components/ImageUploader";
@@ -20,21 +22,20 @@ function NavTab({
   active,
   onClick,
 }: {
-  icon: string;
+  icon: ReactNode;
   label: string;
   active?: boolean;
   onClick?: () => void;
 }) {
-  return (
     <button
-      className="flex flex-col items-center gap-1 flex-1 py-1 transition-opacity hover:opacity-100"
-      style={{ opacity: active ? 1 : 0.4 }}
+      className="flex flex-col items-center gap-1.5 flex-1 py-1.5 transition-opacity hover:opacity-100"
+      style={{ opacity: active ? 1 : 0.5 }}
       onClick={onClick}
     >
-      <span className="text-xl">{icon}</span>
+      <div className={`${active ? "text-[#0ea5e9]" : "text-slate-400"} drop-shadow-sm transition-colors`}>{icon}</div>
       <span
-        className={`text-[10px] font-semibold tracking-wide ${
-          active ? "text-[#22C55E]" : "text-gray-500"
+        className={`text-[10px] font-bold tracking-wide ${
+          active ? "text-[#0ea5e9]" : "text-slate-500"
         }`}
       >
         {label}
@@ -215,30 +216,41 @@ export default function Home() {
   );
 
   return (
-    <div
-      className="relative min-h-screen flex flex-col overflow-x-hidden pb-24"
-      style={{ background: "#0B0F0C" }}
-    >
-      {/* ── Background particles ─────────────────────────────── */}
-      <Particles />
+    <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24 bg-transparent">
+      
+      {/* ── Background Elements ───────────────────────────── */}
+      {/* Floating Clouds */}
+      <div className="cloud w-32 h-16 top-[10%] opacity-80" style={{ animationDuration: '40s' }} />
+      <div className="cloud w-48 h-20 top-[20%] opacity-60" style={{ animationDuration: '55s', animationDelay: '-10s' }} />
+      <div className="cloud w-24 h-12 top-[35%] opacity-70" style={{ animationDuration: '30s', animationDelay: '-20s' }} />
+      <div className="cloud w-56 h-24 top-[5%] opacity-50" style={{ animationDuration: '70s', animationDelay: '-30s' }} />
+      
+      {/* Skyline Background (Fixed to bottom, behind reflection) */}
+      <div 
+        className="fixed bottom-0 left-0 right-0 h-[35vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-[0.85]"
+        style={{ backgroundImage: "url('/skyline.png')" }}
+      />
+      
+      {/* Reflection floor gradient */}
+      <div className="reflection-floor" />
 
       {/* ── Subtle radial glow behind hero ──────────────────── */}
       <div
-        className="pointer-events-none fixed inset-0"
+        className="pointer-events-none fixed inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(255,255,255,0.4) 0%, transparent 70%)",
         }}
       />
 
       {/* ── Header ──────────────────────────────────────────── */}
       <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
         <div>
-          <h1 className="text-3xl font-black tracking-tight gradient-text leading-none">
-            Relic AI
+          <h1 className="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-pink-500 drop-shadow-sm">
+            Relic <span className="text-pink-500">AI</span>
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-0.5">
-            Heritage Scanner
+          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">
+            Heritage Companion
           </p>
         </div>
         <StatusBadge
@@ -309,16 +321,17 @@ export default function Home() {
           <div
             className="fade-up glass px-4 py-3 rounded-2xl flex items-start gap-3"
             style={{
-              borderColor: "rgba(239,68,68,0.4)",
-              background: "rgba(239,68,68,0.06)",
+              borderColor: "rgba(239,68,68,0.3)",
+              background: "rgba(255,255,255,0.9)",
+              boxShadow: "0 4px 14px rgba(239,68,68,0.1)",
             }}
           >
             <span className="text-lg mt-0.5">⚠️</span>
             <div className="flex-1">
-              <p className="text-red-400 text-sm leading-relaxed">{error}</p>
+              <p className="text-red-500 text-sm font-semibold leading-relaxed">{error}</p>
               <button
                 onClick={handleNewScan}
-                className="mt-2 text-xs font-bold text-[#22C55E] hover:underline"
+                className="mt-2 text-xs font-bold text-[#0ea5e9] hover:underline"
               >
                 ← Try again
               </button>
@@ -349,7 +362,7 @@ export default function Home() {
       {/* ── Bottom navigation ────────────────────────────────── */}
       <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
         <NavTab
-          icon="📸"
+          icon={<Camera size={22} strokeWidth={2.5} />}
           label="Camera"
           active={mode === "camera"}
           onClick={() => {
@@ -358,7 +371,7 @@ export default function Home() {
           }}
         />
         <NavTab
-          icon="📁"
+          icon={<Upload size={22} strokeWidth={2.5} />}
           label="Upload"
           active={mode === "upload"}
           onClick={() => {
@@ -366,8 +379,8 @@ export default function Home() {
             setMode("upload");
           }}
         />
-        <NavTab icon="📚" label="History" />
-        <NavTab icon="⚙️" label="Settings" />
+        <NavTab icon={<Clock size={22} strokeWidth={2.5} />} label="History" />
+        <NavTab icon={<Settings size={22} strokeWidth={2.5} />} label="Settings" />
       </nav>
     </div>
   );

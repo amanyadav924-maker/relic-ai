@@ -23,10 +23,10 @@ function InfoRow({
     <div className="flex items-start gap-3">
       <span className="text-lg">{icon}</span>
       <div>
-        <p className="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">
+        <p className="text-[11px] uppercase tracking-widest text-slate-400 font-semibold">
           {label}
         </p>
-        <p className="text-[#F0FDF4] text-sm font-medium leading-snug">
+        <p className="text-slate-800 text-sm font-bold leading-snug">
           {value}
         </p>
       </div>
@@ -43,7 +43,7 @@ export function SkeletonCard() {
       <div className="skeleton h-4 w-1/2" />
       <div className="skeleton h-4 w-2/3" />
       <div className="skeleton h-4 w-1/3" />
-      <hr className="border-[rgba(34,197,94,0.15)]" />
+      <hr className="border-[rgba(14,165,233,0.15)]" />
       <div className="space-y-2">
         <div className="skeleton h-4 w-full" />
         <div className="skeleton h-4 w-[92%]" />
@@ -89,16 +89,16 @@ export function ResultCard({
   return (
     <div
       ref={resultRef}
-      className="fade-up glow-border glass p-5 space-y-5"
+      className="fade-up glass-upload-card p-6 space-y-5"
       style={{ animationDelay: "0.05s" }}
     >
       {/* ── Card header with voice controls ──────────────────── */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
-          <p className="text-[10px] uppercase tracking-widest text-[#22C55E] font-bold mb-1">
+          <p className="text-[10px] uppercase tracking-widest text-[#0ea5e9] font-bold mb-1">
             ✦ Landmark / Masterpiece Identified
           </p>
-          <h2 className="text-xl font-black text-[#F0FDF4] leading-tight">
+          <h2 className="text-xl font-black text-slate-800 leading-tight">
             {response.monument || "Heritage Masterpiece"}
           </h2>
         </div>
@@ -112,9 +112,9 @@ export function ResultCard({
           <div
             className="px-2.5 py-1 rounded-full text-[10px] font-bold"
             style={{
-              background: "rgba(34,197,94,0.15)",
-              color: "#22C55E",
-              border: "1px solid rgba(34,197,94,0.3)",
+              background: "rgba(14,165,233,0.1)",
+              color: "#0ea5e9",
+              border: "1px solid rgba(14,165,233,0.2)",
             }}
           >
             AI Verified
@@ -124,7 +124,7 @@ export function ResultCard({
 
       {/* ── Captured image thumbnail ─────────────────────────── */}
       {previewImage && (
-        <div className="rounded-2xl overflow-hidden" style={{ maxHeight: "160px" }}>
+        <div className="rounded-2xl overflow-hidden shadow-sm" style={{ maxHeight: "160px" }}>
           <img
             src={previewImage}
             alt="Scanned heritage"
@@ -134,7 +134,7 @@ export function ResultCard({
       )}
 
       {/* ── Info grid ────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 bg-white/40 p-4 rounded-2xl border border-white">
         <InfoRow icon="📍" label="Location / Museum" value={response.location} />
         <InfoRow icon="🎨" label="Creator / Builder" value={response.builtBy} />
         <InfoRow icon="🎯" label="Purpose / Meaning" value={response.purpose} />
@@ -146,12 +146,12 @@ export function ResultCard({
       {/* ── Interesting Facts ────────────────────────────────── */}
       {response.interestingFacts && (
         <>
-          <hr style={{ borderColor: "rgba(34,197,94,0.15)" }} />
+          <hr style={{ borderColor: "rgba(14,165,233,0.15)" }} />
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
+            <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2">
               💡 Interesting Facts
             </p>
-            <p className="text-gray-300 text-sm leading-7">
+            <p className="text-slate-600 text-sm leading-relaxed font-medium">
               {response.interestingFacts}
             </p>
           </div>
@@ -161,23 +161,23 @@ export function ResultCard({
       {/* ── Tourism Tips ─────────────────────────────────────── */}
       {response.tourismTips && (
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
+          <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2">
             🧳 Tourism Tips
           </p>
-          <p className="text-gray-300 text-sm leading-7">
+          <p className="text-slate-600 text-sm leading-relaxed font-medium">
             {response.tourismTips}
           </p>
         </div>
       )}
 
-      <hr style={{ borderColor: "rgba(34,197,94,0.15)" }} />
+      <hr style={{ borderColor: "rgba(14,165,233,0.15)" }} />
 
       {/* ── Story ────────────────────────────────────────────── */}
       <div>
-        <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
+        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2">
           📖 The Story
         </p>
-        <p className="text-gray-300 text-sm leading-7">{response.story}</p>
+        <p className="text-slate-600 text-sm leading-relaxed font-medium">{response.story}</p>
       </div>
 
       {/* ── Tags ─────────────────────────────────────────────── */}
@@ -194,11 +194,12 @@ export function ResultCard({
           .map((tag, i) => (
             <span
               key={i}
-              className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
+              className="px-3 py-1 rounded-full text-[11px] font-bold"
               style={{
-                background: "rgba(34,197,94,0.1)",
-                color: "#86EFAC",
-                border: "1px solid rgba(34,197,94,0.2)",
+                background: "#ffffff",
+                color: "#0284c7",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                border: "1px solid rgba(14,165,233,0.1)",
               }}
             >
               #{tag}
@@ -207,23 +208,22 @@ export function ResultCard({
       </div>
 
       {/* ── Actions ──────────────────────────────────────────── */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 pt-2">
         <button
           onClick={onRescan}
-          className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-[#22C55E] transition-colors"
+          className="btn-press flex-1 py-3.5 rounded-2xl text-sm font-bold text-[#0ea5e9] transition-colors"
           style={{
-            background: "rgba(34,197,94,0.08)",
-            border: "1px solid rgba(34,197,94,0.25)",
+            background: "rgba(14,165,233,0.08)",
+            border: "1px solid rgba(14,165,233,0.2)",
           }}
         >
           🔄 Re-scan
         </button>
         <button
           onClick={onNewScan}
-          className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-black transition-all duration-300 hover:shadow-[0_0_15px_rgba(34,197,94,0.45)]"
+          className="btn-press flex-1 py-3.5 rounded-2xl text-sm font-bold text-white shadow-lg shadow-sky-500/20"
           style={{
-            background: "linear-gradient(135deg, #22C55E, #16a34a)",
-            boxShadow: "0 4px 15px rgba(34,197,94,0.25)",
+            background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
           }}
         >
           ✨ New Scan
