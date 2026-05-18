@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
 
@@ -119,41 +119,61 @@ export default function Home() {
     reader.readAsDataURL(file);
   }, [stopSpeech]);
 
+  const isScanningRef = useRef(false);
+
   // ── Core scan function — shared by both modes ──────────────────────────
   const handleScan = useCallback(
     async (b64?: string, mime?: string) => {
+      if (isScanningRef.current) return;
+      
       const scanB64 = b64 || imageB64;
       const scanMime = mime || mimeType;
       if (!scanB64) {
         setError("No image to scan. Please capture or upload an image first.");
         return;
       }
+      
+      isScanningRef.current = true;
       setLoading(true);
       setError("");
       setResponse(null);
       setShowResult(false);
       stopSpeech();
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout to allow server retries
+
       try {
         const res = await fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: scanB64, mimeType: scanMime }),
+          signal: controller.signal,
         });
+        
+        clearTimeout(timeoutId);
+        
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Scan failed");
+        
         setScanPct(100);
         await new Promise(r => setTimeout(r, 400));
         setResponse(parseAIResponse(data.text));
         setShowResult(true);
       } catch (err: unknown) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Something went wrong. Please try again."
-        );
+        clearTimeout(timeoutId);
+        if (err instanceof Error && err.name === "AbortError") {
+          setError("Request timed out. The AI service is taking too long to respond. Please try again.");
+        } else {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Something went wrong. Please try again."
+          );
+        }
       } finally {
         setLoading(false);
+        isScanningRef.current = false;
       }
     },
     [imageB64, mimeType, stopSpeech]
