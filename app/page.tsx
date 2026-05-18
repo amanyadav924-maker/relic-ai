@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, DragEvent } from "react";
 import HeritageBackground from "./components/HeritageBackground";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 interface ParsedResponse {
@@ -85,11 +86,12 @@ function Particles() {
 // ── AI Status indicator ──────────────────────────────────────────────────────
 function StatusBadge({ scanning }: { scanning: boolean }) {
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-medium">
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-semibold text-slate-700">
       <span
-        className={`status-dot w-2 h-2 rounded-full ${scanning ? "bg-yellow-400" : "bg-[#22C55E]"}`}
+        className={`status-dot w-2 h-2 rounded-full ${scanning ? "bg-amber-400" : "bg-sky-500"}`}
+        style={{ boxShadow: scanning ? "0 0 8px #f59e0b" : "0 0 8px #0284c7" }}
       />
-      <span className="text-gray-300">
+      <span>
         {scanning ? "Scanning…" : "AI Ready"}
       </span>
     </div>
@@ -105,7 +107,7 @@ function SkeletonCard() {
       <div className="skeleton h-4 w-1/2" />
       <div className="skeleton h-4 w-2/3" />
       <div className="skeleton h-4 w-1/3" />
-      <hr className="border-[rgba(34,197,94,0.15)]" />
+      <hr style={{ borderColor: "rgba(255, 255, 255, 0.45)" }} />
       <div className="space-y-2">
         <div className="skeleton h-4 w-full" />
         <div className="skeleton h-4 w-[92%]" />
@@ -122,8 +124,8 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
     <div className="flex items-start gap-3">
       <span className="text-lg">{icon}</span>
       <div>
-        <p className="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">{label}</p>
-        <p className="text-[#F0FDF4] text-sm font-medium leading-snug">{value}</p>
+        <p className="text-[11px] uppercase tracking-widest text-slate-500 font-bold">{label}</p>
+        <p className="text-slate-800 text-sm font-semibold leading-snug">{value}</p>
       </div>
     </div>
   );
@@ -133,9 +135,9 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
 function NavTab({ icon, label, active }: { icon: string; label: string; active?: boolean }) {
   return (
     <button className="flex flex-col items-center gap-1 flex-1 py-1 transition-opacity hover:opacity-100"
-      style={{ opacity: active ? 1 : 0.4 }}>
+      style={{ opacity: active ? 1 : 0.45 }}>
       <span className="text-xl">{icon}</span>
-      <span className={`text-[10px] font-semibold tracking-wide ${active ? "text-[#22C55E]" : "text-gray-500"}`}>
+      <span className={`text-[10px] font-bold tracking-wide ${active ? "text-sky-600" : "text-slate-500"}`}>
         {label}
       </span>
     </button>
@@ -250,7 +252,7 @@ export default function Home() {
       <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
         <div>
           <h1 className="text-3xl font-black tracking-tight gradient-text-multi leading-none">Relic AI</h1>
-          <p className="text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-0.5">
+          <p className="text-[11px] text-slate-500 font-semibold tracking-widest uppercase mt-0.5">
             Heritage Companion
           </p>
         </div>
@@ -258,20 +260,25 @@ export default function Home() {
       </header>
 
       {/* ── Main content ────────────────────────────────────── */}
-      <main className="relative z-10 flex-1 flex flex-col gap-5 px-4 max-w-md mx-auto w-full">
+      <motion.main 
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative z-10 flex-1 flex flex-col gap-5 px-4 max-w-md mx-auto w-full"
+      >
 
         {/* ── Upload / Camera preview area ─────────────────── */}
         <div className="fade-up delay-100">
           <div
             className={`relative rounded-3xl overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${dragging ? "upload-active" : "glow-border-multi"}`}
-            style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}
+            style={{ aspectRatio: "4/3", background: "rgba(255, 255, 255, 0.45)" }}
             onDragOver={e => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             onClick={() => !preview && inputRef.current?.click()}
           >
             {/* Scan grid background */}
-            <div className="absolute inset-0 scan-grid opacity-60" />
+            <div className="absolute inset-0 scan-grid opacity-35" />
 
             {preview ? (
               <>
@@ -280,15 +287,15 @@ export default function Home() {
                   className="absolute inset-0 w-full h-full object-cover" />
                 {/* Dim overlay when not loading */}
                 <div className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(11,15,12,0.7) 0%, transparent 50%)" }} />
+                  style={{ background: "linear-gradient(to top, rgba(186,230,253,0.4) 0%, transparent 50%)" }} />
                 {/* Scanning overlay */}
                 {loading && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center"
-                    style={{ background: "rgba(11,15,12,0.55)" }}>
+                    style={{ background: "rgba(255, 255, 255, 0.5)" }}>
                     <div className="scan-line" />
                     <div className="mt-auto mb-6 text-center">
-                      <p className="text-[#22C55E] text-sm font-bold tracking-widest uppercase animate-pulse">
-                        Analyzing Image…
+                      <p className="text-sky-600 text-sm font-bold tracking-widest uppercase animate-pulse">
+                        Scanning Heritage…
                       </p>
                     </div>
                   </div>
@@ -297,14 +304,14 @@ export default function Home() {
                 {!loading && (
                   <button
                     onClick={e => { e.stopPropagation(); inputRef.current?.click(); }}
-                    className="absolute bottom-3 right-3 glass px-3 py-1.5 rounded-xl text-xs font-semibold text-[#22C55E] hover:bg-[rgba(34,197,94,0.15)] transition-colors"
+                    className="absolute bottom-3 right-3 glass px-3 py-1.5 rounded-xl text-xs font-bold text-sky-600 hover:bg-sky-100/50 transition-colors"
                   >
                     ✦ Change
                   </button>
                 )}
                 {/* Corner brackets */}
                 {["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"].map((pos, i) => (
-                  <span key={i} className={`absolute ${pos} w-5 h-5 border-[#22C55E] opacity-80`}
+                  <span key={i} className={`absolute ${pos} w-5 h-5 border-sky-500 opacity-80`}
                     style={{
                       borderTopWidth:    i < 2 ? 2 : 0,
                       borderBottomWidth: i >= 2 ? 2 : 0,
@@ -317,17 +324,17 @@ export default function Home() {
               /* Empty state */
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                  style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)" }}>
+                  style={{ background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
                   🏛️
                 </div>
-                <p className="text-[#22C55E] font-bold text-base">Drop or tap to upload</p>
-                <p className="text-gray-500 text-xs leading-relaxed">
+                <p className="text-sky-600 font-black text-base">Drop or tap to upload</p>
+                <p className="text-slate-500 text-xs leading-relaxed font-medium">
                   Upload a photo of any monument, heritage site, or famous artwork
                 </p>
                 <div className="flex gap-2 flex-wrap justify-center mt-1">
                   {["JPEG", "PNG", "WEBP"].map(f => (
-                    <span key={f} className="px-2 py-0.5 rounded-full text-[10px] font-bold text-gray-400"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <span key={f} className="px-2.5 py-0.5 rounded-full text-[10px] font-bold text-slate-600"
+                      style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.8)" }}>
                       {f}
                     </span>
                   ))}
@@ -342,8 +349,8 @@ export default function Home() {
         {!preview && (
           <button
             onClick={() => inputRef.current?.click()}
-            className="fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm text-black transition-all"
-            style={{ background: "linear-gradient(135deg, #22C55E, #16a34a)" }}
+            className="fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm text-white transition-all shadow-[0_4px_15px_rgba(14,165,233,0.2)]"
+            style={{ background: "linear-gradient(135deg, #0EA5E9, #0284C7)" }}
           >
             <span className="text-lg">📁</span> Upload Image or Artwork
           </button>
@@ -351,12 +358,12 @@ export default function Home() {
 
         {/* ── Scan progress bar ─────────────────────────────── */}
         {loading && (
-          <div className="fade-in rounded-full overflow-hidden h-1.5" style={{ background: "rgba(34,197,94,0.12)" }}>
+          <div className="fade-in rounded-full overflow-hidden h-1.5" style={{ background: "rgba(14,165,233,0.15)" }}>
             <div className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${scanPct}%`,
-                background: "linear-gradient(90deg, #22C55E, #86EFAC)",
-                boxShadow: "0 0 12px rgba(34,197,94,0.6)",
+                background: "linear-gradient(90deg, #0EA5E9, #38BDF8)",
+                boxShadow: "0 0 12px rgba(14,165,233,0.4)",
               }} />
           </div>
         )}
@@ -368,15 +375,15 @@ export default function Home() {
               <button
                 onClick={handleScan}
                 disabled={loading}
-                className={`relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-black transition-all duration-300 ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
-                style={{ background: loading ? "#4b7a5e" : "linear-gradient(135deg, #22C55E, #16a34a)", boxShadow: "0 6px 32px rgba(34,197,94,0.4)" }}
+                className={`relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-white transition-all duration-300 ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
+                style={{ background: loading ? "#0284C7" : "linear-gradient(135deg, #0EA5E9, #0284C7)", boxShadow: "0 6px 32px rgba(14,165,233,0.3)" }}
               >
                 <span className="text-xl">{loading ? "⏳" : "🔍"}</span>
                 <span>{loading ? "Scanning Heritage…" : "Scan with Relic AI"}</span>
               </button>
             </div>
             {!loading && (
-              <p className="text-[11px] text-gray-600 text-center">
+              <p className="text-[11px] text-slate-500 font-semibold text-center">
                 Powered by Gemini Vision · Heritage AI
               </p>
             )}
@@ -386,89 +393,97 @@ export default function Home() {
         {/* ── Error state ───────────────────────────────────── */}
         {error && (
           <div className="fade-up glass px-4 py-3 rounded-2xl flex items-start gap-3"
-            style={{ borderColor: "rgba(239,68,68,0.4)", background: "rgba(239,68,68,0.06)" }}>
+            style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.06)" }}>
             <span className="text-lg mt-0.5">⚠️</span>
-            <p className="text-red-400 text-sm leading-relaxed">{error}</p>
+            <p className="text-red-500 text-sm font-semibold leading-relaxed">{error}</p>
           </div>
         )}
 
         {/* ── Loading skeleton ──────────────────────────────── */}
         {loading && <SkeletonCard />}
 
-        {/* ── AI Response card ──────────────────────────────── */}
-        {showResult && response && (
-          <div ref={resultRef} className="fade-up glow-border-multi glass p-5 space-y-5"
-            style={{ animationDelay: "0.05s" }}>
+        {/* ── AI Response card (Framer Motion Enhanced) ──────── */}
+        <AnimatePresence>
+          {showResult && response && (
+            <motion.div 
+              ref={resultRef}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 120, damping: 15 }}
+              className="fade-up glow-border-multi glass p-5 space-y-5"
+              style={{ animationDelay: "0.05s" }}
+            >
+              {/* Card header */}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-sky-600 font-bold mb-1">
+                    ✦ Landmark / Masterpiece Identified
+                  </p>
+                  <h2 className="text-xl font-black text-slate-900 leading-tight">
+                    {response.monument || "Heritage Masterpiece"}
+                  </h2>
+                </div>
+                <div className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                  style={{ background: "rgba(14,165,233,0.12)", color: "#0284C7", border: "1px solid rgba(14,165,233,0.25)" }}>
+                  AI Verified
+                </div>
+              </div>
 
-            {/* Card header */}
-            <div className="flex items-start justify-between gap-3">
+              {/* Info grid */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
+                <InfoRow icon="📍" label="Location / Museum" value={response.location} />
+                <InfoRow icon="🎨" label="Creator / Builder" value={response.builtBy} />
+                <InfoRow icon="🎯" label="Purpose / Meaning" value={response.purpose} />
+                <InfoRow icon="📅" label="Era / Year" value={response.year} />
+              </div>
+
+              <hr style={{ borderColor: "rgba(255, 255, 255, 0.45)" }} />
+
+              {/* Story */}
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#22C55E] font-bold mb-1">
-                  ✦ Landmark / Masterpiece Identified
+                <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-2">
+                  📖 The Story
                 </p>
-                <h2 className="text-xl font-black text-[#F0FDF4] leading-tight">
-                  {response.monument || "Heritage Masterpiece"}
-                </h2>
+                <p className="text-slate-800 text-sm font-medium leading-7">{response.story}</p>
               </div>
-              <div className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold"
-                style={{ background: "rgba(34,197,94,0.15)", color: "#22C55E", border: "1px solid rgba(34,197,94,0.3)" }}>
-                AI Verified
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2">
+                {[response.monument, response.location?.split(",")[1]?.trim(), "Heritage", "Art History", "AI Scanned"]
+                  .filter(Boolean)
+                  .slice(0, 5)
+                  .map((tag, i) => (
+                    <span key={i} className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                      style={{ background: "rgba(14,165,233,0.08)", color: "#0369A1", border: "1px solid rgba(14,165,233,0.18)" }}>
+                      #{tag}
+                    </span>
+                  ))}
               </div>
-            </div>
 
-            {/* Info grid */}
-            <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
-              <InfoRow icon="📍" label="Location / Museum" value={response.location} />
-              <InfoRow icon="🎨" label="Creator / Builder" value={response.builtBy} />
-              <InfoRow icon="🎯" label="Purpose / Meaning" value={response.purpose} />
-              <InfoRow icon="📅" label="Era / Year" value={response.year} />
-            </div>
-
-            <hr style={{ borderColor: "rgba(34,197,94,0.15)" }} />
-
-            {/* Story */}
-            <div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
-                📖 The Story
-              </p>
-              <p className="text-gray-300 text-sm leading-7">{response.story}</p>
-            </div>
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {[response.monument, response.location?.split(",")[1]?.trim(), "Heritage", "Art History", "AI Scanned"]
-                .filter(Boolean)
-                .slice(0, 5)
-                .map((tag, i) => (
-                  <span key={i} className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
-                    style={{ background: "rgba(34,197,94,0.1)", color: "#86EFAC", border: "1px solid rgba(34,197,94,0.2)" }}>
-                    #{tag}
-                  </span>
-                ))}
-            </div>
-
-            {/* Actions: Re-scan and New Upload side-by-side */}
-            <div className="flex gap-3">
-              <button
-                onClick={handleScan}
-                className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-[#22C55E] transition-colors"
-                style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)" }}
-              >
-                🔄 Re-scan
-              </button>
-              <button
-                onClick={handleNewUpload}
-                className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-black transition-all duration-300 hover:shadow-[0_0_15px_rgba(34,197,94,0.45)]"
-                style={{ background: "linear-gradient(135deg, #22C55E, #16a34a)", boxShadow: "0 4px 15px rgba(34,197,94,0.25)" }}
-              >
-                ✨ New Upload
-              </button>
-            </div>
-          </div>
-        )}
+              {/* Actions: Re-scan and New Upload side-by-side */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleScan}
+                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-sky-600 transition-colors"
+                  style={{ background: "rgba(14,165,233,0.06)", border: "1px solid rgba(14,165,233,0.2)" }}
+                >
+                  🔄 Re-scan
+                </button>
+                <button
+                  onClick={handleNewUpload}
+                  className="btn-press flex-1 py-3 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.35)]"
+                  style={{ background: "linear-gradient(135deg, #0EA5E9, #0284C7)", boxShadow: "0 4px 15px rgba(14,165,233,0.15)" }}
+                >
+                  ✨ New Upload
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="h-4" />
-      </main>
+      </motion.main>
 
       {/* ── Bottom navigation ────────────────────────────────── */}
       <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
