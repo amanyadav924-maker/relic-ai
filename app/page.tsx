@@ -27,6 +27,7 @@ function NavTab({
   active?: boolean;
   onClick?: () => void;
 }) {
+  return (
     <button
       className="flex flex-col items-center gap-1.5 flex-1 py-1.5 transition-opacity hover:opacity-100"
       style={{ opacity: active ? 1 : 0.5 }}
