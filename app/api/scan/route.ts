@@ -1,9 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest } from "next/server";
 
-// Initialize the Google Generative AI client with the API key from environment variables
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
 // Helper function to detect MIME type from base64 string
 function detectMimeType(base64: string): string {
   const prefix = base64.substring(0, 16);
@@ -17,6 +14,20 @@ function detectMimeType(base64: string): string {
 // POST endpoint for scanning the image
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // 1. Validation: Ensure API key is configured
+    if (!apiKey) {
+      console.error("[Relic AI Error] CRITICAL: GEMINI_API_KEY environment variable is missing.");
+      return Response.json(
+        { error: "Gemini API key is not configured on the server. Please check Vercel environment variables." },
+        { status: 500 }
+      );
+    }
+
+    // Initialize the Google Generative AI client safely inside the handler
+    const genAI = new GoogleGenerativeAI(apiKey);
+
     const body = await req.json();
     const { image, mimeType } = body as { image?: string; mimeType?: string };
 
@@ -28,20 +39,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Validation: Ensure API key is configured
-    if (!process.env.GEMINI_API_KEY) {
-      return Response.json(
-        { error: "Gemini API key is not configured on the server." },
-        { status: 500 }
-      );
-    }
-
     // 3. Resolve the image MIME type
     const resolvedMime = mimeType ?? detectMimeType(image);
 
     // 4. Initialize the correct verified Gemini model (gemini-2.5-flash-lite)
-    // gemini-1.5-flash and gemini-1.5-flash-8b return 404 for this API key,
-    // so we use gemini-2.5-flash-lite which is verified, active, and supported.
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-lite",
     });
