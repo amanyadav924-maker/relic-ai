@@ -5,7 +5,7 @@ import HeritageBackground from "./components/HeritageBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   UploadCloud, FolderOpen, Search, History, Compass, Settings, 
-  MapPin, Paintbrush, Target, CalendarDays, BookOpen, RefreshCw, Sparkles 
+  MapPin, Paintbrush, Target, CalendarDays, BookOpen, RefreshCw, Sparkles, AlertCircle, FilePlus
 } from "lucide-react";
 
 // ── Types ───────────────────────────────────────────────────────────────────
