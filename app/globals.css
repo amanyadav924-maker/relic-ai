@@ -83,7 +83,7 @@ html, body {
   border: 1.5px solid var(--accent);
 }
 
-/* ── Pulse ring on scan button ─────────────────────────────── */
+/* ── Pulse ring on scan/capture button ─────────────────────── */
 @keyframes pulse-ring {
   0%   { transform: scale(1);   opacity: 0.8; }
   100% { transform: scale(1.55); opacity: 0; }
@@ -185,4 +185,172 @@ html, body {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border-subtle);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW — Camera, HUD, Voice, and Mode Switcher Styles
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Mode Switcher Tabs ────────────────────────────────────── */
+.mode-switcher {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: rgba(15, 22, 17, 0.8);
+  border: 1px solid var(--border-subtle);
+}
+
+.mode-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(.22,1,.36,1);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.mode-tab.active {
+  background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08));
+  color: var(--accent);
+  box-shadow: 0 2px 12px rgba(34,197,94,0.2);
+  border: 1px solid rgba(34,197,94,0.3);
+}
+
+.mode-tab:not(.active):hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.04);
+}
+
+/* ── HUD Corner Brackets ──────────────────────────────────── */
+@keyframes hud-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+.hud-bracket {
+  animation: hud-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── Center Reticle / Targeting ────────────────────────────── */
+.reticle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+@keyframes reticle-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.5; }
+  50%       { transform: scale(1.15); opacity: 0.9; }
+}
+
+.reticle-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  animation: reticle-pulse 2s ease-in-out infinite;
+}
+
+.reticle-crosshair-h,
+.reticle-crosshair-v {
+  position: absolute;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+.reticle-crosshair-h {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.reticle-crosshair-v {
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+/* ── Capture Button Glow ──────────────────────────────────── */
+.capture-btn {
+  position: relative;
+}
+
+@keyframes capture-glow {
+  0%, 100% { box-shadow: 0 6px 32px rgba(34,197,94,0.3); }
+  50%       { box-shadow: 0 6px 48px rgba(34,197,94,0.55); }
+}
+
+.capture-btn:not(:disabled) {
+  animation: capture-glow 2s ease-in-out infinite;
+}
+
+/* ── Voice Narration Styles ───────────────────────────────── */
+.voice-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-waves {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+
+@keyframes voice-wave-anim {
+  0%, 100% { height: 4px; }
+  50%       { height: 12px; }
+}
+
+.voice-wave {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: voice-wave-anim 0.6s ease-in-out infinite;
+}
+
+/* ── Camera Container ─────────────────────────────────────── */
+.camera-container {
+  position: relative;
+}
+
+.camera-container video {
+  border-radius: 24px;
+}
+
+/* ── Captured Frame Flash ─────────────────────────────────── */
+@keyframes flash {
+  0%   { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.capture-flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  pointer-events: none;
+  animation: flash 0.3s ease-out forwards;
+  border-radius: 24px;
+}
+
+/* ── Safe area padding for bottom nav on mobile ───────────── */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
 }

@@ -39,41 +39,46 @@ export async function POST(req: NextRequest) {
     // 3. Resolve the image MIME type
     const resolvedMime = mimeType ?? detectMimeType(image);
 
-    // 4. Initialize the correct verified Gemini model (gemini-2.5-flash-lite)
-    // gemini-1.5-flash and gemini-1.5-flash-8b return 404 for this API key,
-    // so we use gemini-2.5-flash-lite which is verified, active, and supported.
+    // 4. Initialize the Gemini model
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-lite",
     });
 
-    // 5. Build improved prompt exactly as requested to check monument and artwork validity first
-    const prompt = `You are an expert heritage museum guide and art historian.
+    // 5. Enhanced prompt with additional structured fields for richer heritage analysis
+    const prompt = `You are an expert heritage museum guide, art historian, and cultural storyteller.
 
 First determine whether the uploaded image is:
 * a real monument
 * heritage site
 * historical structure
-* sculpture
-* statue
-* famous painting
+* sculpture or statue
+* famous painting or artwork
 * monumental artwork
-* ancient cultural artwork
+* ancient cultural artifact
 * world-famous landmark
 
 If the image is NOT related to monuments or famous artworks, respond ONLY with:
 'This is not a monument or famous artwork image. Please upload a valid heritage site, monument, sculpture, or artwork image.'
 
 If the image IS valid:
-Return EXACTLY in the following structured format (do not use any markdown bolding inside the bracketed answers themselves):
+Return EXACTLY in the following structured format (do not use any markdown bolding inside the bracketed answers):
 
 Name: [Name of landmark or artwork]
-Location or museum: [Location or Museum where it is located or housed]
+Location or museum: [City, Country — or Museum name where it is housed]
 Built or created by: [Builder, Ruler, Architect, Painter, or Artist name]
-Purpose or artistic meaning: [Purpose of the structure, or the artistic / symbolic meaning of the masterpiece]
+Purpose or artistic meaning: [Purpose of the structure, or the artistic / symbolic meaning]
 Era / year / century: [Year, Century, or Era created]
+Architecture style: [Architectural or art style — e.g. Gothic, Mughal, Renaissance, Baroque, Art Deco, etc.]
+Civilization or culture: [The civilization or cultural tradition it belongs to — e.g. Ancient Egyptian, Mughal Empire, Roman, etc.]
+
+Interesting facts:
+[Write 2-3 fascinating and lesser-known facts about this landmark or artwork, separated by periods.]
+
+Tourism tips:
+[Write 2-3 helpful tips for visitors — best time to visit, nearby attractions, ticket info, etc.]
 
 Story:
-[Write an accurate, cinematic, emotional, and concise storytelling paragraph about the landmark or masterpiece. Describe its glory, history, significance, or emotional story. Do not repeat the individual fields listed above in this section.]`;
+[Write an accurate, cinematic, emotional, and concise storytelling paragraph about the landmark or masterpiece. Describe its glory, history, significance, or emotional story. Make the reader feel like they are standing in front of it. Do not repeat the individual fields listed above in this section.]`;
 
     // 6. Generate the content using Gemini Vision
     const result = await model.generateContent([
@@ -107,10 +112,10 @@ Story:
 
     return Response.json({ text });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Relic AI API Error]:", error);
 
-    const message = error?.message || "An unexpected error occurred during image scanning.";
+    const message = error instanceof Error ? error.message : "An unexpected error occurred during image scanning.";
 
     // Return detailed error for UI handling
     return Response.json(
