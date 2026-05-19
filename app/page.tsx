@@ -223,15 +223,17 @@ export default function Home() {
     >
       {/* ── Cinematic Background with Mouse Parallax & Drift ─────────────────────────────── */}
       <motion.div 
-        className="fixed inset-[-50px] z-0 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 z-0 bg-center bg-no-repeat"
         animate={{ scale: [1.02, 1.05, 1.02], y: [0, -10, 0] }}
         transition={{ duration: 35, repeat: Infinity, ease: "easeInOut" }}
-        style={{ 
-          backgroundImage: "url('/global_heritage_explorer.png')",
-          x: parallaxX,
-          y: parallaxY,
-          filter: "contrast(1.05) brightness(1.2)" // Slightly brighter for wider scene
-        }}
+        style={{
+  backgroundImage: "url('/new-bg.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  x: parallaxX,
+  y: parallaxY,
+  filter: "brightness(1.05) contrast(1.05)"
+}}
       >
         {/* ── Birds far in the sky ─────────────────────────────── */}
         <div className="absolute top-[15%] left-[20%] w-[400px] h-[150px] opacity-40 mix-blend-screen pointer-events-none bird-flight">
