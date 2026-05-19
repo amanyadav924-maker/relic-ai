@@ -54,8 +54,8 @@ export function CameraScanner({
   if (permissionState === "idle" || permissionState === "requesting") {
     return (
       <div className="camera-container fade-up">
-        <div className="relative rounded-3xl overflow-hidden glow-border"
-          style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}>
+        <div className="relative rounded-[32px] overflow-hidden glow-border glass"
+          style={{ aspectRatio: "4/3", background: "rgba(5,8,6,0.5)" }}>
           <div className="absolute inset-0 scan-grid opacity-40" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <div className="w-20 h-20 rounded-full flex items-center justify-center"
@@ -101,10 +101,10 @@ export function CameraScanner({
   if (permissionState === "denied" || permissionState === "error") {
     return (
       <div className="camera-container fade-up">
-        <div className="relative rounded-3xl overflow-hidden"
+        <div className="relative rounded-[32px] overflow-hidden glass"
           style={{
             aspectRatio: "4/3",
-            background: "rgba(15,22,17,0.6)",
+            background: "rgba(5,8,6,0.5)",
             border: "1.5px solid rgba(239,68,68,0.4)",
           }}>
           <div className="absolute inset-0 scan-grid opacity-30" />
@@ -116,31 +116,32 @@ export function CameraScanner({
               }}>
               <span className="text-3xl">🚫</span>
             </div>
-            <p className="text-red-400 font-bold text-sm">
+            <p className="text-[#D4AF37] font-bold text-lg">
               {permissionState === "denied" ? "Camera Access Denied" : "Camera Error"}
             </p>
-            <p className="text-gray-500 text-xs leading-relaxed max-w-[260px]">
-              {errorMessage || "Unable to access camera. Please check your browser settings."}
+            <p className="text-gray-300 text-xs leading-relaxed max-w-[260px]">
+              {errorMessage || "Camera permission was denied. Please allow camera access in your browser settings."}
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-4 mt-2">
               <button
                 onClick={startCamera}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-[#22C55E] transition-colors"
+                className="btn-press px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-300 transition-colors flex items-center gap-2"
                 style={{
-                  background: "rgba(34,197,94,0.08)",
-                  border: "1px solid rgba(34,197,94,0.25)",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
                 }}
               >
-                🔄 Try Again
+                <span className="text-blue-400">⟳</span> Try Again
               </button>
               <button
                 onClick={onSwitchToUpload}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-black"
+                className="btn-press px-5 py-2.5 rounded-xl text-sm font-bold text-[#D4AF37] flex items-center gap-2"
                 style={{
-                  background: "linear-gradient(135deg, #22C55E, #16a34a)",
+                  background: "rgba(212, 175, 55, 0.05)",
+                  border: "1px solid #D4AF37",
                 }}
               >
-                📁 Upload Instead
+                <span className="text-[#D4AF37]">📁</span> Upload Instead
               </button>
             </div>
           </div>
@@ -153,7 +154,7 @@ export function CameraScanner({
   return (
     <div className="camera-container fade-up">
       <div
-        className="relative rounded-3xl overflow-hidden glow-border"
+        className="relative rounded-[32px] overflow-hidden glow-border glass"
         style={{ aspectRatio: "4/3", background: "#000" }}
       >
         {/* Live video feed */}
