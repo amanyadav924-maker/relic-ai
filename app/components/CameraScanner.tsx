@@ -54,8 +54,8 @@ export function CameraScanner({
   if (permissionState === "idle" || permissionState === "requesting") {
     return (
       <div className="camera-container fade-up">
-        <div className="relative rounded-3xl overflow-hidden glow-border"
-          style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}>
+        <div className="relative rounded-[32px] overflow-hidden glow-border glass"
+          style={{ aspectRatio: "4/3", background: "rgba(5,8,6,0.5)" }}>
           <div className="absolute inset-0 scan-grid opacity-40" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <div className="w-20 h-20 rounded-full flex items-center justify-center"
@@ -97,48 +97,61 @@ export function CameraScanner({
     );
   }
 
-  // ── Permission Denied / Error UI ───────────────────────────────────────
+  // ── Permission Denied / Error UI (Cinematic Modal) ───────────────────────
   if (permissionState === "denied" || permissionState === "error") {
     return (
-      <div className="camera-container fade-up">
-        <div className="relative rounded-3xl overflow-hidden"
+      <div className="w-full max-w-md mx-auto fade-up mt-8">
+        <div 
+          className="relative rounded-[32px] overflow-hidden glass p-10 text-center"
           style={{
-            aspectRatio: "4/3",
-            background: "rgba(15,22,17,0.6)",
-            border: "1.5px solid rgba(239,68,68,0.4)",
-          }}>
-          <div className="absolute inset-0 scan-grid opacity-30" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center"
+            background: "rgba(5, 8, 6, 0.65)",
+            border: "1px solid rgba(212, 175, 55, 0.4)",
+            boxShadow: "0 25px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(212, 175, 55, 0.1) inset",
+          }}
+        >
+          {/* Subtle animated gradient glow behind the content */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(212,175,55,0.05)] to-transparent pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col items-center justify-center gap-6">
+            
+            {/* Circular red denied icon */}
+            <div className="w-20 h-20 rounded-full flex items-center justify-center relative"
               style={{
-                background: "rgba(239,68,68,0.12)",
-                border: "1px solid rgba(239,68,68,0.3)",
+                background: "radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0.02) 100%)",
+                border: "1px solid rgba(239,68,68,0.4)",
+                boxShadow: "0 0 20px rgba(239,68,68,0.2), inset 0 0 10px rgba(239,68,68,0.1)",
               }}>
-              <span className="text-3xl">🚫</span>
+              <span className="text-4xl drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]">🚫</span>
             </div>
-            <p className="text-red-400 font-bold text-sm">
-              {permissionState === "denied" ? "Camera Access Denied" : "Camera Error"}
-            </p>
-            <p className="text-gray-500 text-xs leading-relaxed max-w-[260px]">
-              {errorMessage || "Unable to access camera. Please check your browser settings."}
-            </p>
-            <div className="flex gap-3">
+
+            {/* Typography Hierarchy */}
+            <div className="flex flex-col gap-2">
+              <h2 className="text-[22px] font-serif tracking-wide"
+                style={{
+                  color: "#D4AF37",
+                  textShadow: "0 0 15px rgba(212, 175, 55, 0.4)",
+                }}>
+                {permissionState === "denied" ? "Camera Access Denied" : "Camera Error"}
+              </h2>
+              <p className="text-gray-200 text-sm font-medium tracking-wide">
+                Camera permission was denied.
+              </p>
+              <p className="text-gray-400 text-xs leading-relaxed max-w-[260px] mx-auto mt-1">
+                {errorMessage || "Please allow camera access in your browser settings to scan heritage artifacts."}
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mt-4 w-full">
               <button
                 onClick={startCamera}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-[#22C55E] transition-colors"
-                style={{
-                  background: "rgba(34,197,94,0.08)",
-                  border: "1px solid rgba(34,197,94,0.25)",
-                }}
+                className="flex-1 btn-glass btn-glass-blue py-3 font-semibold flex items-center justify-center gap-2"
               >
-                🔄 Try Again
+                <span className="opacity-80">⟳</span> Try Again
               </button>
               <button
                 onClick={onSwitchToUpload}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-black"
-                style={{
-                  background: "linear-gradient(135deg, #22C55E, #16a34a)",
-                }}
+                className="flex-1 btn-glass btn-glass-gold py-3 font-bold flex items-center justify-center gap-2"
               >
                 📁 Upload Instead
               </button>
@@ -153,7 +166,7 @@ export function CameraScanner({
   return (
     <div className="camera-container fade-up">
       <div
-        className="relative rounded-3xl overflow-hidden glow-border"
+        className="relative rounded-[32px] overflow-hidden glow-border glass"
         style={{ aspectRatio: "4/3", background: "#000" }}
       >
         {/* Live video feed */}

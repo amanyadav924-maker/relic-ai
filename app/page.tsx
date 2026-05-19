@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
 
@@ -33,8 +34,8 @@ function NavTab({
     >
       <span className="text-xl">{icon}</span>
       <span
-        className={`text-[10px] font-semibold tracking-wide ${
-          active ? "text-[#22C55E]" : "text-gray-500"
+        className={`text-[10px] font-semibold tracking-wide mt-1 ${
+          active ? "text-[#D4AF37]" : "text-gray-500"
         }`}
       >
         {label}
@@ -47,6 +48,28 @@ function NavTab({
 export default function Home() {
   // Mode: camera (default) or upload
   const [mode, setMode] = useState<ScanMode>("camera");
+
+  // Parallax state for cinematic mouse movement with Framer Motion
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+
+  const springConfig = { damping: 30, stiffness: 60 };
+  const smoothMouseX = useSpring(mouseX, springConfig);
+  const smoothMouseY = useSpring(mouseY, springConfig);
+
+  const parallaxX = useTransform(smoothMouseX, [0, 1], [30, -30]);
+  const parallaxY = useTransform(smoothMouseY, [0, 1], [30, -30]);
+  const foregroundX = useTransform(smoothMouseX, [0, 1], [60, -60]);
+  const foregroundY = useTransform(smoothMouseY, [0, 1], [60, -60]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX / window.innerWidth);
+      mouseY.set(e.clientY / window.innerHeight);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   // Shared state across both modes
   const [preview, setPreview] = useState<string>("");
@@ -196,10 +219,77 @@ export default function Home() {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col overflow-x-hidden pb-24"
-      style={{ background: "#0B0F0C" }}
+      className="relative min-h-screen flex flex-col overflow-x-hidden pb-24 bg-[#0B0F0C]"
     >
-      {/* ── Background particles ─────────────────────────────── */}
+      {/* ── Cinematic Background with Mouse Parallax & Drift ─────────────────────────────── */}
+      <motion.div 
+        className="fixed inset-0 z-0 bg-center bg-no-repeat"
+        animate={{ scale: [1.02, 1.05, 1.02], y: [0, -10, 0] }}
+        transition={{ duration: 35, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+  backgroundImage: "url('/new-bg.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  x: parallaxX,
+  y: parallaxY,
+  filter: "brightness(1.05) contrast(1.05)"
+}}
+      >
+        {/* ── Birds far in the sky ─────────────────────────────── */}
+        <div className="absolute top-[15%] left-[20%] w-[400px] h-[150px] opacity-40 mix-blend-screen pointer-events-none bird-flight">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 50 Q 20 40 30 50 Q 40 40 50 50" stroke="#FFF" strokeWidth="0.8" fill="transparent" className="bird-wing" />
+            <path d="M40 30 Q 50 20 60 30 Q 70 20 80 30" stroke="#FFF" strokeWidth="0.6" fill="transparent" className="bird-wing delay-100" />
+            <path d="M70 60 Q 80 50 90 60 Q 100 50 110 60" stroke="#FFF" strokeWidth="0.4" fill="transparent" className="bird-wing delay-200" />
+          </svg>
+        </div>
+      </motion.div>
+      
+      {/* ── Cinematic God Rays from top center ─────────────────────────────── */}
+      <motion.div 
+        className="fixed inset-[-50px] z-0 pointer-events-none"
+        animate={{ 
+          opacity: [0.6, 0.9, 0.5, 0.8, 0.6],
+          scale: [1, 1.05, 0.98, 1.02, 1]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          background: "radial-gradient(ellipse at 50% -10%, rgba(251, 191, 36, 0.35) 0%, transparent 65%)",
+          mixBlendMode: "screen",
+          x: parallaxX, // Rays shift slightly with parallax
+        }}
+      />
+
+      {/* ── Volumetric Fog & Ground Mist ─────────────────────────────── */}
+      <div className="fixed inset-0 z-0 pointer-events-none moving-fog opacity-60" />
+      <div className="fixed bottom-0 left-0 right-0 h-[50vh] z-0 pointer-events-none ground-mist opacity-80" />
+      
+      {/* ── Glowing Runes (Foreground Parallax) ─────────────────────────────── */}
+      <motion.div
+        className="fixed bottom-[20%] left-[10%] w-40 h-40 z-0 pointer-events-none rounded-full"
+        animate={{ opacity: [0.1, 0.5, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          background: "radial-gradient(circle, rgba(34,197,94,0.3) 0%, transparent 70%)",
+          x: foregroundX,
+          y: foregroundY,
+        }}
+      />
+      <motion.div
+        className="fixed bottom-[30%] right-[15%] w-32 h-32 z-0 pointer-events-none rounded-full"
+        animate={{ opacity: [0.1, 0.6, 0.1] }}
+        transition={{ duration: 8, delay: 2, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          background: "radial-gradient(circle, rgba(20,184,166,0.3) 0%, transparent 70%)",
+          x: foregroundX,
+          y: foregroundY,
+        }}
+      />
+
+      {/* ── Minimal Dark Overlay for UI Contrast (reduced opacity) ──────────────────── */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-[#0B0F0C]/10 via-transparent to-[#0B0F0C]/60 pointer-events-none" />
+
+      {/* ── Background floating dust particles ─────────────────────────────── */}
       <Particles />
 
       {/* ── Subtle radial glow behind hero ──────────────────── */}
@@ -212,14 +302,27 @@ export default function Home() {
       />
 
       {/* ── Header ──────────────────────────────────────────── */}
-      <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight gradient-text leading-none">
-            Relic AI
+      <header className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4 fade-in">
+        <div className="flex flex-col">
+          <h1 
+            className="text-[34px] font-serif tracking-wide flex items-center gap-2 leading-none"
+            style={{ 
+              color: "#FDE047", 
+              textShadow: "0 0 15px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3)" 
+            }}
+          >
+            Relic AI <span className="text-[22px] animate-pulse drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]">✨</span>
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-0.5">
-            Heritage Scanner
-          </p>
+          
+          <div className="flex items-center gap-3 mt-2">
+            <p className="text-[9px] text-[#D4AF37] font-semibold tracking-[0.3em] uppercase opacity-90">
+              Heritage Scanner
+            </p>
+            <div className="flex items-center">
+              <div className="w-1 h-1 rounded-full bg-[#FDE047] shadow-[0_0_8px_2px_rgba(253,224,71,0.6)]" />
+              <div className="w-16 h-[1px] bg-gradient-to-r from-[#D4AF37] to-transparent opacity-40 ml-1" />
+            </div>
+          </div>
         </div>
         <StatusBadge
           scanning={loading}
@@ -327,7 +430,14 @@ export default function Home() {
       </main>
 
       {/* ── Bottom navigation ────────────────────────────────── */}
-      <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
+      <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-3 safe-area-pb">
+        {/* The 'R' Logo */}
+        <div className="flex flex-col items-center justify-center w-[50px]">
+          <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center mt-1">
+            <span className="font-serif text-xl text-gray-300">R</span>
+          </div>
+        </div>
+        
         <NavTab
           icon="📸"
           label="Camera"
@@ -346,7 +456,7 @@ export default function Home() {
             setMode("upload");
           }}
         />
-        <NavTab icon="📚" label="History" />
+        <NavTab icon="🕒" label="History" />
         <NavTab icon="⚙️" label="Settings" />
       </nav>
     </div>
