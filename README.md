@@ -12,6 +12,32 @@ Users can:
 
 ---
 
+# 🌐 Live Demo
+
+🚀 Visit Relic AI Live Website:
+
+👉 [Relic AI Live Demo](https://relic-ai-zeta.vercel.app/?utm_source=chatgpt.com)
+
+Experience:
+
+* Real-time AI monument scanning
+* Cinematic heritage UI
+* Live camera detection
+* AI voice narration
+* Futuristic scanning animations
+
+---
+
+# 🔗 Deployment
+
+Deployed on:
+
+* [Vercel](https://vercel.com/?utm_source=chatgpt.com)
+
+Production URL:
+ [https://relic-ai-zeta.vercel.app/](https://relic-ai-zeta.vercel.app/?utm_source=chatgpt.com)
+
+
 # ✨ Features
 
 ## 📷 Live Camera Scanner
