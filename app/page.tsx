@@ -231,61 +231,15 @@ export default function Home() {
     : "url('/new-bg.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
-  x: parallaxX,
-  y: parallaxY,
-  filter: "brightness(1.05) contrast(1.05)"
-}}
-      >
-        {/* ── Birds far in the sky ─────────────────────────────── */}
-        <div className="absolute top-[15%] left-[20%] w-[400px] h-[150px] opacity-40 mix-blend-screen pointer-events-none bird-flight">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 50 Q 20 40 30 50 Q 40 40 50 50" stroke="#FFF" strokeWidth="0.8" fill="transparent" className="bird-wing" />
-            <path d="M40 30 Q 50 20 60 30 Q 70 20 80 30" stroke="#FFF" strokeWidth="0.6" fill="transparent" className="bird-wing delay-100" />
-            <path d="M70 60 Q 80 50 90 60 Q 100 50 110 60" stroke="#FFF" strokeWidth="0.4" fill="transparent" className="bird-wing delay-200" />
-          </svg>
-        </div>
-      </motion.div>
-      
-      {/* ── Cinematic God Rays from top center ─────────────────────────────── */}
-      <motion.div 
-        className="fixed inset-[-50px] z-0 pointer-events-none"
-        animate={{ 
-          opacity: [0.6, 0.9, 0.5, 0.8, 0.6],
-          scale: [1, 1.05, 0.98, 1.02, 1]
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          background: "radial-gradient(ellipse at 50% -10%, rgba(251, 191, 36, 0.35) 0%, transparent 65%)",
-          mixBlendMode: "screen",
-          x: parallaxX, // Rays shift slightly with parallax
-        }}
-      />
 
-      {/* ── Volumetric Fog & Ground Mist ─────────────────────────────── */}
+  filter: "brightness(1.05) contrast(1.05)"
+}}/>
+      {/* — Volumetric Fog & Ground Mist _____________________ */}
       <div className="fixed inset-0 z-0 pointer-events-none moving-fog opacity-60" />
       <div className="fixed bottom-0 left-0 right-0 h-[50vh] z-0 pointer-events-none ground-mist opacity-80" />
       
-      {/* ── Glowing Runes (Foreground Parallax) ─────────────────────────────── */}
-      <motion.div
-        className="fixed bottom-[20%] left-[10%] w-40 h-40 z-0 pointer-events-none rounded-full"
-        animate={{ opacity: [0.1, 0.5, 0.1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          background: "radial-gradient(circle, rgba(34,197,94,0.3) 0%, transparent 70%)",
-          x: foregroundX,
-          y: foregroundY,
-        }}
-      />
-      <motion.div
-        className="fixed bottom-[30%] right-[15%] w-32 h-32 z-0 pointer-events-none rounded-full"
-        animate={{ opacity: [0.1, 0.6, 0.1] }}
-        transition={{ duration: 8, delay: 2, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          background: "radial-gradient(circle, rgba(20,184,166,0.3) 0%, transparent 70%)",
-          x: foregroundX,
-          y: foregroundY,
-        }}
-      />
+      
+     
 
       {/* ── Minimal Dark Overlay for UI Contrast (reduced opacity) ──────────────────── */}
       <div className="fixed inset-0 z-0 bg-gradient-to-b from-[#0B0F0C]/10 via-transparent to-[#0B0F0C]/60 pointer-events-none" />
