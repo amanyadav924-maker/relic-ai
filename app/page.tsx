@@ -224,10 +224,11 @@ export default function Home() {
       {/* ── Cinematic Background with Mouse Parallax & Drift ─────────────────────────────── */}
       <motion.div 
         className="fixed inset-0 z-0 bg-center bg-no-repeat"
-        animate={{ scale: [1.02, 1.05, 1.02], y: [0, -10, 0] }}
-        transition={{ duration: 35, repeat: Infinity, ease: "easeInOut" }}
+       
         style={{
-  backgroundImage: "url('/new-bg.png')",
+  backgroundImage: typeof window !== "undefined" && window.innerWidth < 768
+    ? "url('/mobile-bg.png')"
+    : "url('/new-bg.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   x: parallaxX,
