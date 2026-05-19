@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
 
-import { Camera, Map, Clock, Settings, Upload, Landmark, Layers } from "lucide-react";
-import { ReactNode } from "react";
-
+import { Particles } from "@/app/components/Particles";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { CameraScanner } from "@/app/components/CameraScanner";
 import { ImageUploader } from "@/app/components/ImageUploader";
@@ -22,21 +20,21 @@ function NavTab({
   active,
   onClick,
 }: {
-  icon: ReactNode;
+  icon: string;
   label: string;
   active?: boolean;
   onClick?: () => void;
 }) {
   return (
     <button
-      className="flex flex-col items-center gap-1.5 flex-1 py-1.5 transition-opacity hover:opacity-100"
-      style={{ opacity: active ? 1 : 0.5 }}
+      className="flex flex-col items-center gap-1 flex-1 py-1 transition-opacity hover:opacity-100"
+      style={{ opacity: active ? 1 : 0.4 }}
       onClick={onClick}
     >
-      <div className={`${active ? "text-[#0ea5e9]" : "text-slate-400"} drop-shadow-sm transition-colors`}>{icon}</div>
+      <span className="text-xl">{icon}</span>
       <span
-        className={`text-[10px] font-bold tracking-wide ${
-          active ? "text-[#0ea5e9]" : "text-slate-500"
+        className={`text-[10px] font-semibold tracking-wide ${
+          active ? "text-[#22C55E]" : "text-gray-500"
         }`}
       >
         {label}
@@ -47,8 +45,8 @@ function NavTab({
 
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
-  // Mode: upload is default for the new scan experience
-  const [mode, setMode] = useState<ScanMode>("upload");
+  // Mode: camera (default) or upload
+  const [mode, setMode] = useState<ScanMode>("camera");
 
   // Shared state across both modes
   const [preview, setPreview] = useState<string>("");
@@ -121,61 +119,41 @@ export default function Home() {
     reader.readAsDataURL(file);
   }, [stopSpeech]);
 
-  const isScanningRef = useRef(false);
-
   // ── Core scan function — shared by both modes ──────────────────────────
   const handleScan = useCallback(
     async (b64?: string, mime?: string) => {
-      if (isScanningRef.current) return;
-      
       const scanB64 = b64 || imageB64;
       const scanMime = mime || mimeType;
       if (!scanB64) {
         setError("No image to scan. Please capture or upload an image first.");
         return;
       }
-      
-      isScanningRef.current = true;
       setLoading(true);
       setError("");
       setResponse(null);
       setShowResult(false);
       stopSpeech();
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout to allow server retries
-
       try {
         const res = await fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: scanB64, mimeType: scanMime }),
-          signal: controller.signal,
         });
-        
-        clearTimeout(timeoutId);
-        
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Scan failed");
-        
         setScanPct(100);
         await new Promise(r => setTimeout(r, 400));
         setResponse(parseAIResponse(data.text));
         setShowResult(true);
       } catch (err: unknown) {
-        clearTimeout(timeoutId);
-        if (err instanceof Error && err.name === "AbortError") {
-          setError("Request timed out. The AI service is taking too long to respond. Please try again.");
-        } else {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Something went wrong. Please try again."
-          );
-        }
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong. Please try again."
+        );
       } finally {
         setLoading(false);
-        isScanningRef.current = false;
       }
     },
     [imageB64, mimeType, stopSpeech]
@@ -217,59 +195,30 @@ export default function Home() {
   );
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24 bg-transparent">
-      
-      {/* ── Background Elements ───────────────────────────── */}
-      {/* Floating Clouds */}
-      <div className="cloud w-32 h-16 top-[10%] opacity-80" style={{ animationDuration: '40s' }} />
-      <div className="cloud w-48 h-20 top-[20%] opacity-60" style={{ animationDuration: '55s', animationDelay: '-10s' }} />
-      <div className="cloud w-24 h-12 top-[35%] opacity-70" style={{ animationDuration: '30s', animationDelay: '-20s' }} />
-      <div className="cloud w-56 h-24 top-[5%] opacity-50" style={{ animationDuration: '70s', animationDelay: '-30s' }} />
-      
-      {/* Birds */}
-      <div className="fixed right-[20%] top-[25%] opacity-30 z-0 pointer-events-none" style={{ transform: "scale(0.6)" }}>
-        <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 20 Q 15 10 20 20 Q 25 10 30 20" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
-          <path d="M0 10 Q 5 0 10 10 Q 15 0 20 10" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
-          <path d="M30 15 Q 35 5 40 15 Q 45 5 50 15" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
-
-      {/* Skyline Background (Fixed to water line, behind reflection) */}
-      <div 
-        className="fixed bottom-[18vh] left-0 right-0 h-[38vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-100"
-        style={{ backgroundImage: "url('/skyline.png')" }}
-      />
-      
-      {/* Reflection floor */}
-      <div 
-        className="fixed bottom-0 left-0 right-0 h-[18vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-60"
-        style={{ 
-          backgroundImage: "url('/skyline.png')",
-          transform: "scaleY(-1)",
-          filter: "blur(3px)",
-          WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)",
-          maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"
-        }}
-      />
+    <div
+      className="relative min-h-screen flex flex-col overflow-x-hidden pb-24"
+      style={{ background: "#0B0F0C" }}
+    >
+      {/* ── Background particles ─────────────────────────────── */}
+      <Particles />
 
       {/* ── Subtle radial glow behind hero ──────────────────── */}
       <div
-        className="pointer-events-none fixed inset-0 z-0"
+        className="pointer-events-none fixed inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(255,255,255,0.4) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%)",
         }}
       />
 
       {/* ── Header ──────────────────────────────────────────── */}
       <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
         <div>
-          <h1 className="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-pink-500 drop-shadow-sm">
-            Relic <span className="text-pink-500">AI</span>
+          <h1 className="text-3xl font-black tracking-tight gradient-text leading-none">
+            Relic AI
           </h1>
-          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">
-            Heritage Companion
+          <p className="text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-0.5">
+            Heritage Scanner
           </p>
         </div>
         <StatusBadge
@@ -280,9 +229,23 @@ export default function Home() {
 
       {/* ── Main content ────────────────────────────────────── */}
       <main className="relative z-10 flex-1 flex flex-col gap-5 px-4 max-w-md mx-auto w-full">
-        {/* ── Mode Switcher (Removed for simpler layout) ───────────────── */}
-        {/* Space added to maintain layout balance */}
-        {!showResult && <div className="h-6" />}
+        {/* ── Mode Switcher ──────────────────────────────────── */}
+        {!showResult && (
+          <div className="mode-switcher fade-up delay-100">
+            <button
+              className={`mode-tab ${mode === "camera" ? "active" : ""}`}
+              onClick={() => switchToMode("camera")}
+            >
+              <span>📸</span> Camera
+            </button>
+            <button
+              className={`mode-tab ${mode === "upload" ? "active" : ""}`}
+              onClick={() => switchToMode("upload")}
+            >
+              <span>📁</span> Upload
+            </button>
+          </div>
+        )}
 
         {/* ── Camera Mode ────────────────────────────────────── */}
         {mode === "camera" && !showResult && (
@@ -326,17 +289,16 @@ export default function Home() {
           <div
             className="fade-up glass px-4 py-3 rounded-2xl flex items-start gap-3"
             style={{
-              borderColor: "rgba(239,68,68,0.3)",
-              background: "rgba(255,255,255,0.9)",
-              boxShadow: "0 4px 14px rgba(239,68,68,0.1)",
+              borderColor: "rgba(239,68,68,0.4)",
+              background: "rgba(239,68,68,0.06)",
             }}
           >
             <span className="text-lg mt-0.5">⚠️</span>
             <div className="flex-1">
-              <p className="text-red-500 text-sm font-semibold leading-relaxed">{error}</p>
+              <p className="text-red-400 text-sm leading-relaxed">{error}</p>
               <button
                 onClick={handleNewScan}
-                className="mt-2 text-xs font-bold text-[#0ea5e9] hover:underline"
+                className="mt-2 text-xs font-bold text-[#22C55E] hover:underline"
               >
                 ← Try again
               </button>
@@ -367,17 +329,25 @@ export default function Home() {
       {/* ── Bottom navigation ────────────────────────────────── */}
       <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
         <NavTab
-          icon={<Landmark size={22} strokeWidth={2.5} />}
-          label="Scan"
-          active={mode === "upload" || mode === "camera"}
+          icon="📸"
+          label="Camera"
+          active={mode === "camera"}
+          onClick={() => {
+            handleNewScan();
+            setMode("camera");
+          }}
+        />
+        <NavTab
+          icon="📁"
+          label="Upload"
+          active={mode === "upload"}
           onClick={() => {
             handleNewScan();
             setMode("upload");
           }}
         />
-        <NavTab icon={<Layers size={22} strokeWidth={2.5} />} label="History" />
-        <NavTab icon={<Map size={22} strokeWidth={2.5} />} label="Explore" />
-        <NavTab icon={<Settings size={22} strokeWidth={2.5} />} label="Settings" />
+        <NavTab icon="📚" label="History" />
+        <NavTab icon="⚙️" label="Settings" />
       </nav>
     </div>
   );

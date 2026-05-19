@@ -54,31 +54,32 @@ export function CameraScanner({
   if (permissionState === "idle" || permissionState === "requesting") {
     return (
       <div className="camera-container fade-up">
-        <div className="relative rounded-[28px] overflow-hidden glass-upload-card"
-          style={{ aspectRatio: "4/3" }}>
-          <div className="absolute inset-0 scan-grid opacity-60" />
+        <div className="relative rounded-3xl overflow-hidden glow-border"
+          style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}>
+          <div className="absolute inset-0 scan-grid opacity-40" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <div className="w-20 h-20 rounded-full flex items-center justify-center"
               style={{
-                background: "rgba(14, 165, 233, 0.1)",
-                border: "2px solid rgba(14, 165, 233, 0.2)",
+                background: "rgba(34,197,94,0.12)",
+                border: "2px solid rgba(34,197,94,0.3)",
               }}>
               <span className="text-4xl animate-pulse">📸</span>
             </div>
-            <p className="text-[#0284c7] font-bold text-base">
+            <p className="text-[#22C55E] font-bold text-base">
               {permissionState === "requesting"
                 ? "Requesting camera access…"
                 : "Camera access needed"}
             </p>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[260px]">
+            <p className="text-gray-500 text-xs leading-relaxed max-w-[260px]">
               Allow camera access to scan monuments and historical artifacts in real time
             </p>
             {permissionState === "idle" && (
               <button
                 onClick={startCamera}
-                className="btn-press hover-lift px-6 py-2.5 rounded-full font-bold text-sm text-white shadow-lg shadow-sky-500/20"
+                className="btn-press hover-lift px-6 py-2.5 rounded-full font-bold text-sm text-black"
                 style={{
-                  background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+                  background: "linear-gradient(135deg, #22C55E, #16a34a)",
+                  boxShadow: "0 4px 20px rgba(34,197,94,0.35)",
                 }}
               >
                 Enable Camera
@@ -100,39 +101,43 @@ export function CameraScanner({
   if (permissionState === "denied" || permissionState === "error") {
     return (
       <div className="camera-container fade-up">
-        <div className="relative rounded-[28px] overflow-hidden glass-upload-card"
-          style={{ aspectRatio: "4/3", border: "1.5px solid rgba(239,68,68,0.4)" }}>
-          <div className="absolute inset-0 scan-grid opacity-60" />
+        <div className="relative rounded-3xl overflow-hidden"
+          style={{
+            aspectRatio: "4/3",
+            background: "rgba(15,22,17,0.6)",
+            border: "1.5px solid rgba(239,68,68,0.4)",
+          }}>
+          <div className="absolute inset-0 scan-grid opacity-30" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
-                background: "rgba(239,68,68,0.08)",
-                border: "1px solid rgba(239,68,68,0.2)",
+                background: "rgba(239,68,68,0.12)",
+                border: "1px solid rgba(239,68,68,0.3)",
               }}>
               <span className="text-3xl">🚫</span>
             </div>
-            <p className="text-red-500 font-bold text-sm">
+            <p className="text-red-400 font-bold text-sm">
               {permissionState === "denied" ? "Camera Access Denied" : "Camera Error"}
             </p>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[260px]">
+            <p className="text-gray-500 text-xs leading-relaxed max-w-[260px]">
               {errorMessage || "Unable to access camera. Please check your browser settings."}
             </p>
-            <div className="flex gap-3 mt-2">
+            <div className="flex gap-3">
               <button
                 onClick={startCamera}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-[#0284c7] transition-colors"
+                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-[#22C55E] transition-colors"
                 style={{
-                  background: "rgba(14, 165, 233, 0.08)",
-                  border: "1px solid rgba(14, 165, 233, 0.2)",
+                  background: "rgba(34,197,94,0.08)",
+                  border: "1px solid rgba(34,197,94,0.25)",
                 }}
               >
                 🔄 Try Again
               </button>
               <button
                 onClick={onSwitchToUpload}
-                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md shadow-sky-500/20"
+                className="btn-press px-4 py-2 rounded-xl text-xs font-bold text-black"
                 style={{
-                  background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+                  background: "linear-gradient(135deg, #22C55E, #16a34a)",
                 }}
               >
                 📁 Upload Instead
@@ -148,7 +153,7 @@ export function CameraScanner({
   return (
     <div className="camera-container fade-up">
       <div
-        className="relative rounded-[28px] overflow-hidden shadow-2xl"
+        className="relative rounded-3xl overflow-hidden glow-border"
         style={{ aspectRatio: "4/3", background: "#000" }}
       >
         {/* Live video feed */}
@@ -162,7 +167,7 @@ export function CameraScanner({
         />
 
         {/* Scan grid overlay */}
-        <div className="absolute inset-0 scan-grid opacity-80 pointer-events-none" />
+        <div className="absolute inset-0 scan-grid opacity-30 pointer-events-none" />
 
         {/* Scanning overlay when AI is analyzing */}
         <ScanningOverlay active={loading} label="AI Analyzing…" />
@@ -174,13 +179,12 @@ export function CameraScanner({
               (pos, i) => (
                 <span
                   key={i}
-                  className={`absolute ${pos} w-8 h-8 hud-bracket`}
+                  className={`absolute ${pos} w-6 h-6 border-[#22C55E] hud-bracket pointer-events-none`}
                   style={{
-                    borderStyle: 'solid',
-                    borderTopWidth: i < 2 ? 3 : 0,
-                    borderBottomWidth: i >= 2 ? 3 : 0,
-                    borderLeftWidth: i % 2 === 0 ? 3 : 0,
-                    borderRightWidth: i % 2 === 1 ? 3 : 0,
+                    borderTopWidth: i < 2 ? 2 : 0,
+                    borderBottomWidth: i >= 2 ? 2 : 0,
+                    borderLeftWidth: i % 2 === 0 ? 2 : 0,
+                    borderRightWidth: i % 2 === 1 ? 2 : 0,
                   }}
                 />
               )
@@ -204,14 +208,14 @@ export function CameraScanner({
 
         {/* Bottom HUD info bar */}
         {isStreaming && !loading && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 px-4 py-4 flex items-center justify-between pointer-events-none"
+          <div className="absolute bottom-0 left-0 right-0 z-10 px-4 py-3 flex items-center justify-between pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(11,15,12,0.8) 0%, transparent 100%)",
             }}>
-            <span className="text-[10px] text-white/90 font-bold tracking-wider uppercase drop-shadow-md">
-              <span className="text-red-400 mr-1 animate-pulse">●</span> LIVE
+            <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase">
+              ● LIVE
             </span>
-            <span className="text-[10px] text-white/90 font-bold tracking-wider drop-shadow-md">
+            <span className="text-[10px] text-gray-500 font-medium tracking-wider">
               Point at a monument
             </span>
           </div>
@@ -225,13 +229,14 @@ export function CameraScanner({
             <button
               onClick={handleCapture}
               disabled={loading}
-              className={`capture-btn btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-white transition-all duration-300 ${
+              className={`capture-btn relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-black transition-all duration-300 ${
                 loading ? "opacity-60 cursor-not-allowed" : ""
               }`}
               style={{
                 background: loading
-                  ? "#bae6fd"
-                  : "linear-gradient(135deg, #0ea5e9, #0284c7)",
+                  ? "#4b7a5e"
+                  : "linear-gradient(135deg, #22C55E, #16a34a)",
+                boxShadow: "0 6px 32px rgba(34,197,94,0.4)",
               }}
             >
               <span className="text-xl">{loading ? "⏳" : "📸"}</span>
@@ -239,7 +244,7 @@ export function CameraScanner({
             </button>
           </div>
           {!loading && (
-            <p className="text-[11px] text-slate-500 font-medium text-center">
+            <p className="text-[11px] text-gray-600 text-center">
               Tap to capture · AI powered by Gemini Vision
             </p>
           )}

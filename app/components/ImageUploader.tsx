@@ -2,7 +2,6 @@
 
 import { useRef, useCallback, useState, DragEvent } from "react";
 import { ScanningOverlay } from "./ScanningOverlay";
-import { Landmark } from "lucide-react";
 
 // ── Image Upload Component ───────────────────────────────────────────────────
 // Handles file upload via click, drag-and-drop, or file picker. Displays the
@@ -50,10 +49,10 @@ export function ImageUploader({
     <div className="fade-up delay-100">
       {/* ── Preview / Drop zone ─────────────────────────────── */}
       <div
-        className={`relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 ${
-          dragging ? "upload-active" : "glass-upload-card"
+        className={`relative rounded-3xl overflow-hidden cursor-pointer hover-lift transition-all duration-300 ${
+          dragging ? "upload-active" : "glow-border"
         }`}
-        style={{ aspectRatio: "4/3" }}
+        style={{ aspectRatio: "4/3", background: "rgba(15,22,17,0.6)" }}
         onDragOver={e => {
           e.preventDefault();
           setDragging(true);
@@ -63,7 +62,7 @@ export function ImageUploader({
         onClick={() => !preview && inputRef.current?.click()}
       >
         {/* Scan grid background */}
-        <div className="absolute inset-0 scan-grid opacity-80" />
+        <div className="absolute inset-0 scan-grid opacity-60" />
 
         {preview ? (
           <>
@@ -78,7 +77,7 @@ export function ImageUploader({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(255,255,255,0.8) 0%, transparent 50%)",
+                  "linear-gradient(to top, rgba(11,15,12,0.7) 0%, transparent 50%)",
               }}
             />
             {/* Scanning overlay */}
@@ -91,7 +90,7 @@ export function ImageUploader({
                   e.stopPropagation();
                   inputRef.current?.click();
                 }}
-                className="absolute bottom-3 right-3 z-20 glass px-3 py-1.5 rounded-xl text-xs font-bold text-[#0284c7] hover:bg-[rgba(255,255,255,0.4)] transition-colors"
+                className="absolute bottom-3 right-3 z-20 glass px-3 py-1.5 rounded-xl text-xs font-semibold text-[#22C55E] hover:bg-[rgba(34,197,94,0.15)] transition-colors"
               >
                 ✦ Change
               </button>
@@ -107,7 +106,7 @@ export function ImageUploader({
               ].map((pos, i) => (
                 <span
                   key={i}
-                  className={`absolute ${pos} w-5 h-5 border-[#ffffff] shadow-[0_0_8px_rgba(255,255,255,0.8)] opacity-90`}
+                  className={`absolute ${pos} w-5 h-5 border-[#22C55E] opacity-80`}
                   style={{
                     borderTopWidth: i < 2 ? 2 : 0,
                     borderBottomWidth: i >= 2 ? 2 : 0,
@@ -121,28 +120,28 @@ export function ImageUploader({
           /* Empty state */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
               style={{
-                background: "rgba(15, 23, 42, 0.05)",
-                border: "1px solid rgba(15, 23, 42, 0.05)",
+                background: "rgba(34,197,94,0.12)",
+                border: "1px solid rgba(34,197,94,0.3)",
               }}
             >
-              <Landmark size={32} className="text-slate-400" />
+              🏛️
             </div>
-            <p className="text-[#0284c7] font-bold text-lg mt-2">
+            <p className="text-[#22C55E] font-bold text-base">
               Drop or tap to upload
             </p>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-[280px] mx-auto font-medium">
+            <p className="text-gray-500 text-xs leading-relaxed">
               Upload a photo of any monument, heritage site, or famous artwork
             </p>
-            <div className="flex gap-2 flex-wrap justify-center mt-3">
+            <div className="flex gap-2 flex-wrap justify-center mt-1">
               {["JPEG", "PNG", "WEBP"].map(f => (
                 <span
                   key={f}
-                  className="px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600"
+                  className="px-2 py-0.5 rounded-full text-[10px] font-bold text-gray-400"
                   style={{
-                    background: "#ffffff",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
                   }}
                 >
                   {f}
@@ -164,9 +163,9 @@ export function ImageUploader({
       {!preview && (
         <button
           onClick={() => inputRef.current?.click()}
-          className="mt-5 fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm text-white shadow-lg shadow-sky-500/20"
+          className="mt-4 fade-up delay-200 btn-press hover-lift flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm text-black transition-all"
           style={{
-            background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+            background: "linear-gradient(135deg, #22C55E, #16a34a)",
           }}
         >
           <span className="text-lg">📁</span> Upload Image or Artwork
@@ -177,14 +176,14 @@ export function ImageUploader({
       {loading && (
         <div
           className="mt-4 fade-in rounded-full overflow-hidden h-1.5"
-          style={{ background: "rgba(14, 165, 233, 0.15)" }}
+          style={{ background: "rgba(34,197,94,0.12)" }}
         >
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{
               width: `${scanPct}%`,
-              background: "linear-gradient(90deg, #0ea5e9, #7dd3fc)",
-              boxShadow: "0 0 12px rgba(14,165,233,0.6)",
+              background: "linear-gradient(90deg, #22C55E, #86EFAC)",
+              boxShadow: "0 0 12px rgba(34,197,94,0.6)",
             }}
           />
         </div>
@@ -196,16 +195,17 @@ export function ImageUploader({
           <div className="relative">
             <button
               onClick={onScan}
-              className="capture-btn btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-white transition-all duration-300"
+              className="relative pulse-ring btn-press hover-lift flex items-center gap-3 px-10 py-4 rounded-full font-black text-base tracking-wide text-black transition-all duration-300"
               style={{
-                background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+                background: "linear-gradient(135deg, #22C55E, #16a34a)",
+                boxShadow: "0 6px 32px rgba(34,197,94,0.4)",
               }}
             >
               <span className="text-xl">🔍</span>
               <span>Scan with Relic AI</span>
             </button>
           </div>
-          <p className="text-[11px] text-slate-500 font-medium text-center">
+          <p className="text-[11px] text-gray-600 text-center">
             Powered by Gemini Vision · Heritage AI
           </p>
         </div>

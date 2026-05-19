@@ -1,6 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest } from "next/server";
 
+// Initialize the Google Generative AI client with the API key from environment variables
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+
 // Helper function to detect MIME type from base64 string
 function detectMimeType(base64: string): string {
   const prefix = base64.substring(0, 16);
@@ -14,20 +17,6 @@ function detectMimeType(base64: string): string {
 // POST endpoint for scanning the image
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    // 1. Validation: Ensure API key is configured
-    if (!apiKey) {
-      console.error("[Relic AI Error] CRITICAL: GEMINI_API_KEY environment variable is missing.");
-      return Response.json(
-        { error: "Gemini API key is not configured on the server. Please check Vercel environment variables." },
-        { status: 500 }
-      );
-    }
-
-    // Initialize the Google Generative AI client safely inside the handler
-    const genAI = new GoogleGenerativeAI(apiKey);
-
     const body = await req.json();
     const { image, mimeType } = body as { image?: string; mimeType?: string };
 
@@ -39,13 +28,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 2. Validation: Ensure API key is configured
+    if (!process.env.GEMINI_API_KEY) {
+      return Response.json(
+        { error: "Gemini API key is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
     // 3. Resolve the image MIME type
     const resolvedMime = mimeType ?? detectMimeType(image);
 
-    // 4. Initialize the fallback models strategy
-    const FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-1.5-flash"];
-    const MAX_RETRIES_PER_MODEL = 2; // initial + 2 retries = 3 attempts per model
-    let lastError: Error | null = null;
+    // 4. Initialize the Gemini model
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash-lite",
+    });
 
     // 5. Enhanced prompt with additional structured fields for richer heritage analysis
     const prompt = `You are an expert heritage museum guide, art historian, and cultural storyteller.
@@ -83,89 +80,40 @@ Tourism tips:
 Story:
 [Write an accurate, cinematic, emotional, and concise storytelling paragraph about the landmark or masterpiece. Describe its glory, history, significance, or emotional story. Make the reader feel like they are standing in front of it. Do not repeat the individual fields listed above in this section.]`;
 
-    // 6. Execute request with exponential backoff and model fallbacks
-    for (const modelName of FALLBACK_MODELS) {
-      const model = genAI.getGenerativeModel({ model: modelName });
+    // 6. Generate the content using Gemini Vision
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          data: image,
+          mimeType: resolvedMime,
+        },
+      },
+    ]);
 
-      for (let attempt = 0; attempt <= MAX_RETRIES_PER_MODEL; attempt++) {
-        try {
-          const result = await model.generateContent([
-            prompt,
-            {
-              inlineData: {
-                data: image,
-                mimeType: resolvedMime,
-              },
-            },
-          ]);
+    const response = await result.response;
+    const text = response.text();
 
-          const response = await result.response;
-          const text = response.text();
-
-          if (!text) {
-            throw new Error("Empty response received from Gemini.");
-          }
-
-          // 7. Detect invalid images and return a clean error response
-          if (
-            text.includes("This is not a monument or famous artwork image") || 
-            text.toLowerCase().includes("please upload a valid heritage site") ||
-            text.toLowerCase().includes("not a monument or famous artwork")
-          ) {
-            return Response.json(
-              { error: "This is not a monument or famous artwork image. Please upload a valid heritage site, monument, sculpture, or artwork image." },
-              { status: 400 }
-            );
-          }
-
-          return Response.json({ text });
-
-        } catch (err: unknown) {
-          const error = err as Error & { status?: number; response?: { status?: number } };
-          lastError = error;
-          const status = error?.status || error?.response?.status;
-          const errMsg = error?.message?.toLowerCase() || "";
-          
-          const isRateLimit = status === 429 || errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("exhausted");
-          const isBusy = status === 503 || errMsg.includes("503") || errMsg.includes("overloaded");
-
-          if (isRateLimit || isBusy) {
-            console.warn(`[Relic AI] API busy/rate-limit on ${modelName} (Attempt ${attempt + 1}).`);
-            if (attempt < MAX_RETRIES_PER_MODEL) {
-              // Exponential backoff with jitter: 1s, 2s, etc.
-              const backoffMs = Math.pow(2, attempt) * 1000 + Math.random() * 500;
-              await new Promise(resolve => setTimeout(resolve, backoffMs));
-              continue; // Retry same model
-            } else {
-              console.warn(`[Relic AI] Exhausted retries for ${modelName}. Falling back...`);
-              break; // Break inner loop to try next model
-            }
-          } else {
-            // Not a rate limit error, don't retry, let it fall through or try next model
-            console.error(`[Relic AI] Non-retryable error on ${modelName}:`, error);
-            break;
-          }
-        }
-      }
+    if (!text) {
+      throw new Error("Empty response received from Gemini.");
     }
 
-    // If we exhaust all models and all retries
-    throw lastError || new Error("Failed to generate content after all retries.");
-
-  } catch (err: unknown) {
-    console.error("[Relic AI API Error]:", err);
-
-    const error = err as Error & { status?: number };
-    const errMsg = error?.message?.toLowerCase() || "";
-    const isRateLimit = error?.status === 429 || errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("exhausted");
-    
-    // Provide a sanitized user-friendly message for rate limits
-    if (isRateLimit) {
+    // 7. Detect invalid images and return a clean error response
+    if (
+      text.includes("This is not a monument or famous artwork image") || 
+      text.toLowerCase().includes("please upload a valid heritage site") ||
+      text.toLowerCase().includes("not a monument or famous artwork")
+    ) {
       return Response.json(
-        { error: "AI service is currently busy. Please try again in a moment." },
-        { status: 429 }
+        { error: "This is not a monument or famous artwork image. Please upload a valid heritage site, monument, sculpture, or artwork image." },
+        { status: 400 }
       );
     }
+
+    return Response.json({ text });
+
+  } catch (error: unknown) {
+    console.error("[Relic AI API Error]:", error);
 
     const message = error instanceof Error ? error.message : "An unexpected error occurred during image scanning.";
 
