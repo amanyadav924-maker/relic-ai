@@ -25,7 +25,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   /* Premium sky gradient */
-  background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 40%, #e0f2fe 100%);
+  background: linear-gradient(180deg, #0ea5e9 0%, #7dd3fc 45%, #e0f2fe 100%);
   background-attachment: fixed;
 }
 
@@ -36,20 +36,23 @@ html, body {
 
 /* ── Clouds Background Animation ───────────────────────────── */
 @keyframes float-cloud {
-  0% { transform: translateX(-10vw); opacity: 0; }
-  20% { opacity: 0.8; }
-  80% { opacity: 0.8; }
-  100% { transform: translateX(110vw); opacity: 0; }
+  0% { transform: translateX(-15vw); opacity: 0; }
+  20% { opacity: 0.85; }
+  80% { opacity: 0.85; }
+  100% { transform: translateX(115vw); opacity: 0; }
 }
 
 .cloud {
   position: fixed;
   background: white;
-  border-radius: 50px;
-  filter: blur(8px);
+  border-radius: 100px;
+  filter: blur(1.5px);
   pointer-events: none;
   animation: float-cloud linear infinite;
   z-index: 0;
+  box-shadow: 
+    20px -15px 0 -2px white,
+    45px -5px 0 -5px white;
 }
 
 /* ── Glassmorphism card ────────────────────────────────────── */
@@ -345,15 +348,3 @@ html, body {
   100% { transform: translateY(100%); opacity: 0; }
 }
 
-/* ── Reflection Floor ────────────────────────────────────── */
-.reflection-floor {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 25vh;
-  background: linear-gradient(to top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%);
-  backdrop-filter: blur(4px);
-  z-index: 0;
-  pointer-events: none;
-}

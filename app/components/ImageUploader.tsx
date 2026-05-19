@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useState, DragEvent } from "react";
 import { ScanningOverlay } from "./ScanningOverlay";
+import { Landmark } from "lucide-react";
 
 // ── Image Upload Component ───────────────────────────────────────────────────
 // Handles file upload via click, drag-and-drop, or file picker. Displays the
@@ -120,28 +121,28 @@ export function ImageUploader({
           /* Empty state */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+              className="w-16 h-16 rounded-2xl flex items-center justify-center"
               style={{
-                background: "rgba(14, 165, 233, 0.1)",
-                border: "1px solid rgba(14, 165, 233, 0.2)",
+                background: "rgba(15, 23, 42, 0.05)",
+                border: "1px solid rgba(15, 23, 42, 0.05)",
               }}
             >
-              🏛️
+              <Landmark size={32} className="text-slate-400" />
             </div>
-            <p className="text-[#0284c7] font-bold text-base">
+            <p className="text-[#0284c7] font-bold text-lg mt-2">
               Drop or tap to upload
             </p>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[220px] mx-auto">
+            <p className="text-slate-500 text-sm leading-relaxed max-w-[280px] mx-auto font-medium">
               Upload a photo of any monument, heritage site, or famous artwork
             </p>
-            <div className="flex gap-2 flex-wrap justify-center mt-2">
+            <div className="flex gap-2 flex-wrap justify-center mt-3">
               {["JPEG", "PNG", "WEBP"].map(f => (
                 <span
                   key={f}
-                  className="px-3 py-1 rounded-full text-[10px] font-bold text-[#0284c7]"
+                  className="px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600"
                   style={{
                     background: "#ffffff",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
                   }}
                 >
                   {f}

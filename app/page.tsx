@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
 
-import { Camera, Map, Clock, Settings, Upload } from "lucide-react";
+import { Camera, Map, Clock, Settings, Upload, Landmark, Layers } from "lucide-react";
 import { ReactNode } from "react";
 
 import { StatusBadge } from "@/app/components/StatusBadge";
@@ -47,8 +47,8 @@ function NavTab({
 
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
-  // Mode: camera (default) or upload
-  const [mode, setMode] = useState<ScanMode>("camera");
+  // Mode: upload is default for the new scan experience
+  const [mode, setMode] = useState<ScanMode>("upload");
 
   // Shared state across both modes
   const [preview, setPreview] = useState<string>("");
@@ -226,14 +226,32 @@ export default function Home() {
       <div className="cloud w-24 h-12 top-[35%] opacity-70" style={{ animationDuration: '30s', animationDelay: '-20s' }} />
       <div className="cloud w-56 h-24 top-[5%] opacity-50" style={{ animationDuration: '70s', animationDelay: '-30s' }} />
       
-      {/* Skyline Background (Fixed to bottom, behind reflection) */}
+      {/* Birds */}
+      <div className="fixed right-[20%] top-[25%] opacity-30 z-0 pointer-events-none" style={{ transform: "scale(0.6)" }}>
+        <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 20 Q 15 10 20 20 Q 25 10 30 20" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
+          <path d="M0 10 Q 5 0 10 10 Q 15 0 20 10" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
+          <path d="M30 15 Q 35 5 40 15 Q 45 5 50 15" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
+        </svg>
+      </div>
+
+      {/* Skyline Background (Fixed to water line, behind reflection) */}
       <div 
-        className="fixed bottom-0 left-0 right-0 h-[35vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-[0.85]"
+        className="fixed bottom-[18vh] left-0 right-0 h-[38vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-100"
         style={{ backgroundImage: "url('/skyline.png')" }}
       />
       
-      {/* Reflection floor gradient */}
-      <div className="reflection-floor" />
+      {/* Reflection floor */}
+      <div 
+        className="fixed bottom-0 left-0 right-0 h-[18vh] bg-contain bg-bottom bg-repeat-x z-0 pointer-events-none opacity-60"
+        style={{ 
+          backgroundImage: "url('/skyline.png')",
+          transform: "scaleY(-1)",
+          filter: "blur(3px)",
+          WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)",
+          maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"
+        }}
+      />
 
       {/* ── Subtle radial glow behind hero ──────────────────── */}
       <div
@@ -262,23 +280,9 @@ export default function Home() {
 
       {/* ── Main content ────────────────────────────────────── */}
       <main className="relative z-10 flex-1 flex flex-col gap-5 px-4 max-w-md mx-auto w-full">
-        {/* ── Mode Switcher ──────────────────────────────────── */}
-        {!showResult && (
-          <div className="mode-switcher fade-up delay-100">
-            <button
-              className={`mode-tab ${mode === "camera" ? "active" : ""}`}
-              onClick={() => switchToMode("camera")}
-            >
-              <span>📸</span> Camera
-            </button>
-            <button
-              className={`mode-tab ${mode === "upload" ? "active" : ""}`}
-              onClick={() => switchToMode("upload")}
-            >
-              <span>📁</span> Upload
-            </button>
-          </div>
-        )}
+        {/* ── Mode Switcher (Removed for simpler layout) ───────────────── */}
+        {/* Space added to maintain layout balance */}
+        {!showResult && <div className="h-6" />}
 
         {/* ── Camera Mode ────────────────────────────────────── */}
         {mode === "camera" && !showResult && (
@@ -363,24 +367,16 @@ export default function Home() {
       {/* ── Bottom navigation ────────────────────────────────── */}
       <nav className="bottom-nav fixed bottom-0 left-0 right-0 z-20 flex items-center px-6 py-2 safe-area-pb">
         <NavTab
-          icon={<Camera size={22} strokeWidth={2.5} />}
-          label="Camera"
-          active={mode === "camera"}
-          onClick={() => {
-            handleNewScan();
-            setMode("camera");
-          }}
-        />
-        <NavTab
-          icon={<Upload size={22} strokeWidth={2.5} />}
-          label="Upload"
-          active={mode === "upload"}
+          icon={<Landmark size={22} strokeWidth={2.5} />}
+          label="Scan"
+          active={mode === "upload" || mode === "camera"}
           onClick={() => {
             handleNewScan();
             setMode("upload");
           }}
         />
-        <NavTab icon={<Clock size={22} strokeWidth={2.5} />} label="History" />
+        <NavTab icon={<Layers size={22} strokeWidth={2.5} />} label="History" />
+        <NavTab icon={<Map size={22} strokeWidth={2.5} />} label="Explore" />
         <NavTab icon={<Settings size={22} strokeWidth={2.5} />} label="Settings" />
       </nav>
     </div>
