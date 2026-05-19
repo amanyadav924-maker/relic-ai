@@ -262,44 +262,59 @@ html, body {
    NEW — Camera, HUD, Voice, and Mode Switcher Styles
    ════════════════════════════════════════════════════════════════ */
 
-/* ── Mode Switcher Tabs ────────────────────────────────────── */
+/* ── Mode Switcher Tabs (Floating Segmented Control) ─────────────── */
+@keyframes float-pill {
+  0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(212,175,55,0.05); }
+  50% { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 0 30px rgba(212,175,55,0.1); }
+}
+
 .mode-switcher {
   display: flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 16px;
-  background: rgba(15, 22, 17, 0.8);
-  border: 1px solid var(--border-subtle);
+  width: max-content;
+  margin: 0 auto;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 9999px;
+  background: rgba(5, 8, 6, 0.65);
+  backdrop-filter: blur(32px) saturate(140%);
+  -webkit-backdrop-filter: blur(32px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  animation: float-pill 6s ease-in-out infinite;
+  z-index: 30;
 }
 
 .mode-tab {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border-radius: 12px;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 9999px;
   font-size: 13px;
   font-weight: 700;
-  transition: all 0.3s cubic-bezier(.22,1,.36,1);
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   outline: none;
   color: var(--text-muted);
   background: transparent;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .mode-tab.active {
-  background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08));
-  color: var(--accent);
-  box-shadow: 0 2px 12px rgba(212,175,55,0.2);
+  background: linear-gradient(180deg, rgba(212,175,55,0.15), rgba(212,175,55,0.04));
+  color: #FDE047;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15), inset 0 -1px 4px rgba(212,175,55,0.4);
   border: 1px solid rgba(212,175,55,0.3);
+  text-shadow: 0 0 10px rgba(253,224,71,0.5);
 }
 
 .mode-tab:not(.active):hover {
   color: var(--text-primary);
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.06);
 }
 
 /* ── HUD Corner Brackets ──────────────────────────────────── */
