@@ -300,15 +300,27 @@ export default function Home() {
       />
 
       {/* ── Header ──────────────────────────────────────────── */}
-      <header className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4 fade-in">
+      <header className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4 fade-in">
         <div className="flex flex-col">
-          <h1 className="text-[32px] font-serif tracking-wide text-[#FDE047] flex items-center gap-2 leading-none">
-            Relic AI <span className="text-xl">✦</span>
+          <h1 
+            className="text-[34px] font-serif tracking-wide flex items-center gap-2 leading-none"
+            style={{ 
+              color: "#FDE047", 
+              textShadow: "0 0 15px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3)" 
+            }}
+          >
+            Relic AI <span className="text-[22px] animate-pulse drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]">✨</span>
           </h1>
-          <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-1">
-            HERITAGE SCANNER
-          </p>
-          <div className="w-12 h-[1px] bg-gradient-to-r from-[#D4AF37] to-transparent mt-3 opacity-60" />
+          
+          <div className="flex items-center gap-3 mt-2">
+            <p className="text-[9px] text-[#D4AF37] font-semibold tracking-[0.3em] uppercase opacity-90">
+              Heritage Scanner
+            </p>
+            <div className="flex items-center">
+              <div className="w-1 h-1 rounded-full bg-[#FDE047] shadow-[0_0_8px_2px_rgba(253,224,71,0.6)]" />
+              <div className="w-16 h-[1px] bg-gradient-to-r from-[#D4AF37] to-transparent opacity-40 ml-1" />
+            </div>
+          </div>
         </div>
         <StatusBadge
           scanning={loading}
