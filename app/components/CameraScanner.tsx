@@ -145,24 +145,13 @@ export function CameraScanner({
             <div className="flex gap-4 mt-4 w-full">
               <button
                 onClick={startCamera}
-                className="flex-1 btn-press py-3 rounded-2xl text-sm font-semibold text-gray-300 transition-colors flex items-center justify-center gap-2"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-                }}
+                className="flex-1 btn-glass btn-glass-blue py-3 font-semibold flex items-center justify-center gap-2"
               >
-                <span className="text-blue-400 opacity-80">⟳</span> Try Again
+                <span className="opacity-80">⟳</span> Try Again
               </button>
               <button
                 onClick={onSwitchToUpload}
-                className="flex-1 btn-press py-3 rounded-2xl text-sm font-bold text-[#FDE047] flex items-center justify-center gap-2"
-                style={{
-                  background: "linear-gradient(180deg, rgba(212,175,55,0.1), rgba(212,175,55,0.02))",
-                  border: "1px solid rgba(212, 175, 55, 0.5)",
-                  boxShadow: "0 4px 15px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
-                  textShadow: "0 0 10px rgba(212,175,55,0.4)",
-                }}
+                className="flex-1 btn-glass btn-glass-gold py-3 font-bold flex items-center justify-center gap-2"
               >
                 📁 Upload Instead
               </button>
