@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { parseAIResponse, type ParsedResponse } from "@/app/lib/parseAIResponse";
 import { useSpeechSynthesis } from "@/app/hooks/useSpeechSynthesis";
+import { model } from "./lib/gemini";
 
 import { Particles } from "@/app/components/Particles";
 import { StatusBadge } from "@/app/components/StatusBadge";
@@ -46,6 +47,13 @@ function NavTab({
 
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
+  const testAI = async () => {
+  const result = await model.generateContent(
+    "Explain Taj Mahal in cinematic style"
+  );
+
+  console.log(result.response.text());
+};
   // Mode: camera (default) or upload
   const [mode, setMode] = useState<ScanMode>("camera");
 
@@ -140,10 +148,35 @@ export default function Home() {
       setImageB64(b64);
     };
     reader.readAsDataURL(file);
+
   }, [stopSpeech]);
+  async function retryFetch(url: string, options: RequestInit, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, options);
+
+      if (res.ok) return res;
+
+      if (res.status === 503) {
+        console.log("Gemini overloaded, retrying...");
+        await new Promise(r => setTimeout(r, 2000));
+        continue;
+      }
+
+      return res;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+    }
+  }
+
+  throw new Error("Failed after retries");
+}
+
+// Core scan function
+const handleScan = useCallback(
 
   // ── Core scan function — shared by both modes ──────────────────────────
-  const handleScan = useCallback(
+  
     async (b64?: string, mime?: string) => {
       const scanB64 = b64 || imageB64;
       const scanMime = mime || mimeType;
@@ -158,7 +191,7 @@ export default function Home() {
       stopSpeech();
 
       try {
-        const res = await fetch("/api/scan", {
+        const res = await retryFetch("/api/scan",  {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: scanB64, mimeType: scanMime }),
@@ -218,9 +251,20 @@ export default function Home() {
   );
 
   return (
-    <div
-      className="relative min-h-screen flex flex-col overflow-x-hidden pb-24 bg-[#0B0F0C]"
+  <>
+    <button
+      onClick={testAI}
+      className="fixed top-5 right-5 z-50 px-4 py-2 rounded-xl bg-yellow-500 text-black font-bold"
     >
+      Test Gemini
+    </button>
+
+    <div className="relative min-h-screen flex flex-col overflow-x-hidden pb-24 bg-[#0B0F0C]">
+
+      {/* your existing UI */}
+
+    </div>
+  
       {/* ── Cinematic Background with Mouse Parallax & Drift ─────────────────────────────── */}
       <motion.div 
         className="fixed inset-0 z-0 bg-center bg-no-repeat"
@@ -414,6 +458,6 @@ export default function Home() {
         <NavTab icon="🕒" label="History" />
         <NavTab icon="⚙️" label="Settings" />
       </nav>
-    </div>
-  );
-}
+    </>
+        );
+      }
